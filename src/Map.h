@@ -4,9 +4,10 @@
 #include "GameState.h"
 #include <SDL.h>
 
+#include <SDL.h>
 #include <vector>
 
-struct MapTileLayer
+struct MapLayer
 {
     std::vector<int> tiles;
 };
@@ -18,11 +19,12 @@ class Map : public GameState
         ~Map();
         int getWidth() const;
         int getHidth() const;
-        std::vector<MapTileLayer> getLayers();
+        void addLayer(MapLayer layer);
+        std::vector<MapLayer> getLayers();
         void update();
         void render(SDL_Renderer *renderer);
     private:
         int width, height;
-        std::vector<MapTileLayer> layers;
+        std::vector<MapLayer> layers;
 };
 #endif

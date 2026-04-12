@@ -3,6 +3,7 @@
 #include "Map.h"
 
 #include <SDL.h>
+#include <SDL_events.h>
 #include <SDL_image.h>
 
 #include <climits>
@@ -37,11 +38,11 @@ int Game::run()
         return -1;
     }
 
-    currentState = new MainMenu;
+    // init states
+    MainMenu* mainMenuState = new MainMenu;
+    Map* mapState = new Map{20, 15};
 
-    if (currentState == nullptr) {
-        return -1;
-    }
+    changeState(mainMenuState);
 
     // Main loop
      bool running = true;
@@ -53,8 +54,8 @@ int Game::run()
                     running = false;
                     break;
                 case SDL_KEYDOWN:
-                    currentState = new Map{10, 10};
-                    break;
+                    changeState(mapState);
+                    break;;
             }
         }
 
@@ -78,6 +79,13 @@ int Game::run()
 }
 
 // PRIVATE
+void Game::changeState(GameState* state)
+{
+    if (state != currentState) {
+        currentState = state;
+    }
+}
+
 SDL_Texture* Game::loadTexture(std::string filename)
 {
     SDL_Texture *texture;

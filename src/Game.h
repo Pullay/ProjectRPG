@@ -16,6 +16,7 @@ class Game final
         SDL_Renderer* renderer;
         GameState* currentState;
 
+        void changeState(GameState* state);
         SDL_Texture* loadTexture(std::string filename);
 };
 #endif
