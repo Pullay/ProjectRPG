@@ -1,16 +1,21 @@
 #include "Game.h"
 #include "MainMenu.h"
+#include "Map.h"
 
-#include <SDL_events.h>
+#include <SDL.h>
 #include <SDL_image.h>
 
+#include <climits>
 #include <iostream>
 
 Game::Game()
 {}
 
 Game::~Game()
-{}
+{
+    delete currentState;
+    currentState = nullptr;
+}
 
 // TODO: Split into several separate methods
 // priority: low
@@ -32,7 +37,12 @@ int Game::run()
         return -1;
     }
 
-    MainMenu mainmenu;
+    currentState = new MainMenu;
+
+    if (currentState == nullptr) {
+        return -1;
+    }
+
     // Main loop
      bool running = true;
     while (running) {
@@ -42,15 +52,19 @@ int Game::run()
                 case SDL_QUIT:
                     running = false;
                     break;
+                case SDL_KEYDOWN:
+                    currentState = new Map{10, 10};
+                    break;
             }
-            mainmenu.handleEvent(event);
         }
+
+        currentState->update();
 
         // Draw
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        mainmenu.render(renderer);
+        currentState->render(renderer);
 
         SDL_RenderPresent(renderer);
         SDL_Delay(60);

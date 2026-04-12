@@ -4,9 +4,11 @@
 #include <SDL.h>
 
 #include <cassert>
-#include <iostream>
 
-void MainMenu::handleEvent(SDL_Event &e)
+MainMenu::~MainMenu()
+{}
+
+void MainMenu::update()
 {}
 
 void MainMenu::render(SDL_Renderer *renderer)
