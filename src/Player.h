@@ -11,8 +11,6 @@ class Player
         Player(std::string name);
         ~Player();
         std::string getName() const;
-        void update();
-        void render(SDL_Renderer *renderer);
     private:
         std::string name;
         int x, y;

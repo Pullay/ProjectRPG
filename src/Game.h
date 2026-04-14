@@ -1,10 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "GameState.h"
+#include "State.h"
 #include <SDL.h>
-
-#include <string>
 
 class Game final
 {
@@ -14,9 +12,8 @@ class Game final
         int run();
     private:
         SDL_Renderer* renderer;
-        GameState* currentState;
+        State* currentState;
 
-        void changeState(GameState* state);
-        SDL_Texture* loadTexture(std::string filename);
+        void changeState(State* state);
 };
 #endif

@@ -1,17 +1,16 @@
-#include "MainMenu.h"
+#include "MainMenuState.h"
 
 #include <SDL_image.h>
-#include <SDL.h>
 
 #include <cassert>
 
-MainMenu::~MainMenu()
+MainMenuState::~MainMenuState()
 {}
 
-void MainMenu::update()
+void MainMenuState::update()
 {}
 
-void MainMenu::render(SDL_Renderer *renderer)
+void MainMenuState::render(SDL_Renderer *renderer)
 {
     //background
     SDL_Texture* backgroundTexture = IMG_LoadTexture(renderer, "assets/gui/main_menu.png");

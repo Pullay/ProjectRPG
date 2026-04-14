@@ -1,10 +1,8 @@
 #ifndef MAP_H_
 #define MAP_H_
 
-#include "GameState.h"
 #include <SDL.h>
 
-#include <SDL.h>
 #include <vector>
 
 struct MapLayer
@@ -12,7 +10,7 @@ struct MapLayer
     std::vector<int> tiles;
 };
 
-class Map : public GameState
+class Map
 {
     public:
         Map(int width, int height);
@@ -21,8 +19,6 @@ class Map : public GameState
         int getHidth() const;
         void addLayer(MapLayer layer);
         std::vector<MapLayer> getLayers();
-        void update();
-        void render(SDL_Renderer *renderer);
     private:
         int width, height;
         std::vector<MapLayer> layers;

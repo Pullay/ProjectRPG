@@ -1,12 +1,9 @@
 #include "Game.h"
-#include "MainMenu.h"
-#include "Map.h"
+#include "MainMenuState.h"
+#include "MapState.h"
 
-#include <SDL.h>
-#include <SDL_events.h>
 #include <SDL_image.h>
 
-#include <climits>
 #include <iostream>
 
 Game::Game()
@@ -39,8 +36,8 @@ int Game::run()
     }
 
     // init states
-    MainMenu* mainMenuState = new MainMenu;
-    Map* mapState = new Map{20, 15};
+    MainMenuState* mainMenuState = new MainMenuState;
+    MapState* mapState = new MapState;
 
     changeState(mainMenuState);
 
@@ -55,7 +52,7 @@ int Game::run()
                     break;
                 case SDL_KEYDOWN:
                     changeState(mapState);
-                    break;;
+                    break;
             }
         }
 
@@ -79,21 +76,9 @@ int Game::run()
 }
 
 // PRIVATE
-void Game::changeState(GameState* state)
+void Game::changeState(State* state)
 {
     if (state != currentState) {
         currentState = state;
     }
-}
-
-SDL_Texture* Game::loadTexture(std::string filename)
-{
-    SDL_Texture *texture;
-    texture = IMG_LoadTexture(renderer, filename.c_str());
-
-    if (texture == nullptr) {
-        std::cout << SDL_GetError() << std::endl;
-    }
-
-    return texture;
 }

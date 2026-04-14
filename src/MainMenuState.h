@@ -1,15 +1,12 @@
 #ifndef MAINMENU_H_
 #define MAINMENU_H_
 
-#include "GameState.h"
+#include "State.h"
 
-#include <SDL.h>
-#include <SDL_events.h>
-
-class MainMenu final : public GameState
+class MainMenuState final : public State
 {
     public:
-        ~MainMenu();
+        ~MainMenuState();
         void update();
         void render(SDL_Renderer *renderer);
 };

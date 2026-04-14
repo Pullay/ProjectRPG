@@ -3,10 +3,10 @@
 
 #include <SDL.h>
 
-class GameState
+class State
 {
     public:
-        virtual ~GameState() {}
+        virtual ~State() {}
         virtual void update() = 0;
         virtual void render(SDL_Renderer *renderer) = 0;
 };
