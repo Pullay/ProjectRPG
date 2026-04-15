@@ -9,7 +9,7 @@ inline SDL_Texture* loadTexture(SDL_Renderer* renderer, std::string filename)
     SDL_Texture* texture;
     texture = IMG_LoadTexture(renderer, filename.c_str());
 
-    if (texture == nullptr) {
+    if (!texture) {
         std::cout << SDL_GetError() << std::endl;
     }
 

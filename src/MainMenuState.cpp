@@ -13,7 +13,7 @@ void MainMenuState::update()
 void MainMenuState::render(SDL_Renderer *renderer)
 {
     //background
-    SDL_Texture* backgroundTexture = IMG_LoadTexture(renderer, "assets/gui/main_menu.png");
-    assert(backgroundTexture != nullptr);
-    SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
+    SDL_Texture* background_texture = IMG_LoadTexture(renderer, "assets/gui/main_menu.png");
+    assert(!background_texture);
+    SDL_RenderCopy(renderer, background_texture, NULL, NULL);
 }

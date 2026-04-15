@@ -5,7 +5,7 @@ Map::Map(int width, int height) : width(width), height(height)
 {
     // TODO: temp
     // init map
-    int i, j;
+    uint16_t i, j;
     MapLayer layer;
     for (i = 0; i < width; i++) {
         for (j = 0; j < height; j++) {

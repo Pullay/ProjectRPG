@@ -19,6 +19,7 @@ class Map
         int getHidth() const;
         void addLayer(MapLayer layer);
         std::vector<MapLayer> getLayers();
+
     private:
         int width, height;
         std::vector<MapLayer> layers;

@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "State.h"
+
 #include <SDL.h>
 
 class Game final

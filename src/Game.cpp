@@ -36,10 +36,10 @@ int Game::run()
     }
 
     // init states
-    MainMenuState* mainMenuState = new MainMenuState;
-    MapState* mapState = new MapState;
+    MainMenuState* main_menu_state = new MainMenuState;
+    MapState* map_state = new MapState;
 
-    changeState(mainMenuState);
+    changeState(main_menu_state);
 
     // Main loop
      bool running = true;
@@ -51,7 +51,7 @@ int Game::run()
                     running = false;
                     break;
                 case SDL_KEYDOWN:
-                    changeState(mapState);
+                    changeState(map_state);
                     break;
             }
         }
