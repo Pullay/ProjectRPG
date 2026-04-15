@@ -1,42 +1,58 @@
 #include "MapState.h"
+#include "Player.h"
 #include "utils.h"
 
 MapState::MapState()
 {
     // init
-    map = new Map{20, 15};
+    map = new Map(20, 15);
+    player = new Player("");
 }
 
 MapState::~MapState()
 {
     delete map;
     map = nullptr;
+    delete player;
+    player = nullptr;
 }
 
 void MapState::update()
-{}
+{
+    
+}
 
 void MapState::render(SDL_Renderer* renderer)
 {
     renderMap(renderer);
+    renderPlayer(renderer);
 }
 
 // PRIVATE
 void MapState::renderMap(SDL_Renderer* renderer)
 {
-    SDL_Texture* mapTileSet = loadTexture(renderer,  "assets/map_tiles.png");
-    SDL_Rect src{32, 0, 32, 32};
+    SDL_Texture* map_tileset = loadTexture(renderer,  "assets/map_tiles.png");
+    SDL_Rect src{32, 32, 32, 32};
     int x = 0, y = 0;
     for (auto layer : map->getLayers()) {
         for (auto tile : layer.tiles) {
-            draw(renderer, mapTileSet, src, x * 32, y * 32);
+            draw(renderer, map_tileset, src, x * 32, y * 32);
 
-            x++;
+            ++x;
             if (x >= map->getWidth()) {
                 x = 0;
-                y++;
-                if (y >= map->getHidth()) y = 0;
+                ++y;
+
+                if (y >= map->getHidth())
+                    y = 0;
             }
         }
     }
+}
+
+void MapState::renderPlayer(SDL_Renderer* renderer)
+{
+    SDL_Texture* player_spirite = loadTexture(renderer, "assets/player.png");
+    SDL_Rect src{24, 32, 24, 32};
+    draw(renderer, player_spirite, src, 0, 0);
 }
