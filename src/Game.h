@@ -11,6 +11,7 @@ class Game final
         Game();
         ~Game();
         int run();
+
     private:
         SDL_Renderer* renderer;
         State* currentState;

@@ -3,6 +3,7 @@
 #include "MapState.h"
 
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 
 #include <iostream>
 
@@ -24,7 +25,15 @@ int Game::run()
         return -1;
     }
 
-    IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
+    if (!IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG)) {
+        std::cout << IMG_GetError << std::endl;
+        return -1;
+    }
+
+    if (TTF_Init() == -1) {
+        std::cout << TTF_GetError << std::endl;
+        return -1;
+    }
 
     SDL_Window* window = SDL_CreateWindow("ProjectRPG", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 380, SDL_WINDOW_OPENGL);
 
@@ -42,7 +51,7 @@ int Game::run()
     changeState(main_menu_state);
 
     // Main loop
-     bool running = true;
+    bool running = true;
     while (running) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -69,6 +78,7 @@ int Game::run()
     }
 
     IMG_Quit();
+    TTF_Quit();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();

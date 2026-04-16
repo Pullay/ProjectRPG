@@ -36,7 +36,7 @@ void MapState::renderMap(SDL_Renderer* renderer)
     int x = 0, y = 0;
     for (auto layer : map->getLayers()) {
         for (auto tile : layer.tiles) {
-            draw(renderer, map_tileset, src, x * 32, y * 32);
+            drawTexture(renderer, map_tileset, src, x * 32, y * 32);
 
             ++x;
             if (x >= map->getWidth()) {
@@ -54,5 +54,5 @@ void MapState::renderPlayer(SDL_Renderer* renderer)
 {
     SDL_Texture* player_spirite = loadTexture(renderer, "assets/player.png");
     SDL_Rect src{24, 32, 24, 32};
-    draw(renderer, player_spirite, src, 0, 0);
+    drawTexture(renderer, player_spirite, src, 0, 0);
 }
