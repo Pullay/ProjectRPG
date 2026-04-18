@@ -29,7 +29,7 @@ class Player
 
     private:
         const std::string name;
-        int x, y;
+        int x = 0, y = 0;
         PlayerState state;
 };
 #endif

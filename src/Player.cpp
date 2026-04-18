@@ -1,9 +1,7 @@
 #include "Player.h"
 
 Player::Player(const std::string name) : name(name)
-{
-    int x = 0, y = 0;
-}
+{}
 
 Player::~Player()
 {}

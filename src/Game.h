@@ -10,12 +10,15 @@ class Game final
     public:
         Game();
         ~Game();
+        void setState(State* state);
+        State* getState();
+        SDL_Event getEvent();
+        // WARNING: Do not use inside the State
         int run();
 
     private:
         SDL_Renderer* renderer;
-        State* currentState;
-
-        void changeState(State* state);
+        SDL_Event event;
+        State* state;
 };
 #endif

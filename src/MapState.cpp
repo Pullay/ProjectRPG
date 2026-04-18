@@ -1,8 +1,9 @@
+#include "Game.h"
 #include "MapState.h"
 #include "Player.h"
 #include "utils.h"
 
-MapState::MapState()
+MapState::MapState(Game* game): game(game)
 {
     // init
     map = new Map(20, 15);
@@ -11,6 +12,8 @@ MapState::MapState()
 
 MapState::~MapState()
 {
+    delete game;
+    game = nullptr;
     delete map;
     map = nullptr;
     delete player;
@@ -18,9 +21,7 @@ MapState::~MapState()
 }
 
 void MapState::update()
-{
-    
-}
+{}
 
 void MapState::render(SDL_Renderer* renderer)
 {
@@ -54,5 +55,5 @@ void MapState::renderPlayer(SDL_Renderer* renderer)
 {
     SDL_Texture* player_spirite = loadTexture(renderer, "assets/player.png");
     SDL_Rect src{24, 32, 24, 32};
-    drawTexture(renderer, player_spirite, src, 0, 0);
+    drawTexture(renderer, player_spirite, src, player->getX(), player->getY());
 }

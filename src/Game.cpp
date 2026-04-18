@@ -1,6 +1,5 @@
 #include "Game.h"
 #include "MainMenuState.h"
-#include "MapState.h"
 
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -8,12 +7,26 @@
 #include <iostream>
 
 Game::Game()
-{}
+{
+    setState(new MainMenuState(this));
+}
 
 Game::~Game()
+{}
+
+void Game::setState(State* state)
 {
-    delete currentState;
-    currentState = nullptr;
+    this->state = state;
+}
+
+State* Game::getState()
+{
+    return state;
+}
+
+SDL_Event Game::getEvent()
+{
+    return event;
 }
 
 // TODO: Split into several separate methods
@@ -35,7 +48,7 @@ int Game::run()
         return -1;
     }
 
-    SDL_Window* window = SDL_CreateWindow("ProjectRPG", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 380, SDL_WINDOW_OPENGL);
+    SDL_Window* window = SDL_CreateWindow("ProjectRPG", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_OPENGL);
 
     renderer = SDL_CreateRenderer(window, -1, 0);
 
@@ -44,51 +57,33 @@ int Game::run()
         return -1;
     }
 
-    // init states
-    MainMenuState* main_menu_state = new MainMenuState;
-    MapState* map_state = new MapState;
-
-    changeState(main_menu_state);
-
     // Main loop
     bool running = true;
     while (running) {
-        SDL_Event event;
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_QUIT:
                     running = false;
                     break;
-                case SDL_KEYDOWN:
-                    changeState(map_state);
-                    break;
             }
-        }
 
-        currentState->update();
+            state->update();
+        }
 
         // Draw
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        currentState->render(renderer);
+        state->render(renderer);
 
         SDL_RenderPresent(renderer);
         SDL_Delay(60);
     }
 
-    IMG_Quit();
     TTF_Quit();
+    IMG_Quit();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
     return 0;
-}
-
-// PRIVATE
-void Game::changeState(State* state)
-{
-    if (state != currentState) {
-        currentState = state;
-    }
 }
