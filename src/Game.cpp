@@ -39,12 +39,12 @@ int Game::run()
     }
 
     if (!IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG)) {
-        std::cout << IMG_GetError << std::endl;
+        std::cout << IMG_GetError << "\n";
         return -1;
     }
 
     if (TTF_Init() == -1) {
-        std::cout << TTF_GetError << std::endl;
+        std::cout << TTF_GetError << "\n";
         return -1;
     }
 
@@ -53,7 +53,12 @@ int Game::run()
     renderer = SDL_CreateRenderer(window, -1, 0);
 
     if (!renderer) {
-        std::cout << SDL_GetError() << std::endl;
+        std::cout << SDL_GetError() << "\n";
+        return -1;
+    }
+
+    if (!state) {
+        std::cout << "The State class has not been initialized \n";
         return -1;
     }
 

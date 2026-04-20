@@ -1,14 +1,12 @@
 #include "MainMenuState.h"
+#include "MapState.h"
 #include "utils.h"
 
 MainMenuState::MainMenuState(Game* game) : game(game)
 {}
 
 MainMenuState::~MainMenuState()
-{
-    delete game;
-    game  = nullptr;
-}
+{}
 
 void MainMenuState::update()
 {

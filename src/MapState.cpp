@@ -12,8 +12,6 @@ MapState::MapState(Game* game): game(game)
 
 MapState::~MapState()
 {
-    delete game;
-    game = nullptr;
     delete map;
     map = nullptr;
     delete player;

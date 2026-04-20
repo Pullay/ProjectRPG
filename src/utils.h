@@ -11,10 +11,16 @@ inline SDL_Texture* loadTexture(SDL_Renderer* renderer, std::string filename)
     texture = IMG_LoadTexture(renderer, filename.c_str());
 
     if (!texture) {
-        std::cout << SDL_GetError() << std::endl;
+        std::cout << SDL_GetError() << "\n";
     }
 
     return texture;
+}
+
+inline void drawTexture(SDL_Renderer* renderer, SDL_Texture* texture, int x, int y)
+{
+    SDL_Rect dst{x, y};
+    SDL_RenderCopy(renderer, texture, NULL, &dst);
 }
 
 inline void drawTexture(SDL_Renderer* renderer, SDL_Texture* texture, SDL_Rect &src, int x, int y)
