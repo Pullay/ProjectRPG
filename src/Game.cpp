@@ -8,87 +8,93 @@
 
 Game::Game()
 {
-    setState(new MainMenuState(this));
+    state = new MainMenuState();
 }
 
 Game::~Game()
-{}
-
-void Game::setState(State* state)
 {
-    this->state = state;
+    delete state;
+    state = nullptr;
 }
 
-State* Game::getState()
+void Game::run()
 {
-    return state;
+    initialize();
+    // Main loop
+    while (isRunning) {
+        float current_time = SDL_GetTicks();
+        float delta_time = (current_time - lastFrameTime) / 1000.0f;
+        lastFrameTime = current_time;
+        processInput();
+        update(delta_time);
+        render();
+        SDL_Delay(16);
+    }
+    shutdown();
 }
 
-SDL_Event Game::getEvent()
+// PRIVATE
+bool Game::initialize()
 {
-    return event;
-}
-
-// TODO: Split into several separate methods
-// priority: low
-int Game::run()
-{
-    if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-        std::cout << SDL_GetError() << std::endl;
-        return -1;
+     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
+        std::cout << SDL_GetError() <<"\n";
+        return false;
     }
 
     if (!IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG)) {
         std::cout << IMG_GetError << "\n";
-        return -1;
+        return false;
     }
 
     if (TTF_Init() == -1) {
         std::cout << TTF_GetError << "\n";
-        return -1;
+        return false;
     }
 
-    SDL_Window* window = SDL_CreateWindow("ProjectRPG", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_OPENGL);
+    window = SDL_CreateWindow("ProjectRPG", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_OPENGL);
 
-    renderer = SDL_CreateRenderer(window, -1, 0);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     if (!renderer) {
         std::cout << SDL_GetError() << "\n";
-        return -1;
+        return false;
     }
 
-    if (!state) {
-        std::cout << "The State class has not been initialized \n";
-        return -1;
-    }
+    state->setRenderer(renderer);
+    isRunning = true;
+    lastFrameTime = SDL_GetTicks();
+    return true;
+}
 
-    // Main loop
-    bool running = true;
-    while (running) {
-        while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-                case SDL_QUIT:
-                    running = false;
-                    break;
-            }
-
-            state->update();
+void Game::processInput()
+{
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_QUIT) {
+            isRunning = false;
         }
-
-        // Draw
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
-
-        state->render(renderer);
-
-        SDL_RenderPresent(renderer);
-        SDL_Delay(60);
+        state->handleEvent(event);
     }
+}
 
+void Game::update(float deltaTime)
+{
+    state->update(deltaTime);
+}
+
+void Game::render()
+{
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+    state->render();
+    SDL_RenderPresent(renderer);
+}
+
+void Game::shutdown()
+{
     TTF_Quit();
     IMG_Quit();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
-    return 0;
 }

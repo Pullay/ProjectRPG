@@ -2,24 +2,29 @@
 #include "MapState.h"
 #include "utils.h"
 
-MainMenuState::MainMenuState(Game* game) : game(game)
+MainMenuState::MainMenuState()
 {}
 
 MainMenuState::~MainMenuState()
 {}
 
-void MainMenuState::update()
+void MainMenuState::update(float deltaTime)
 {
-    auto map_state = new MapState(game);
-    SDL_KeyboardEvent keyboard_event = game->getEvent().key;
-    if (keyboard_event.type == SDL_KEYUP) {
+    if (event.key.type == SDL_KEYUP) {
         // change state
-        game->setState(map_state);
+        auto map_state = new MapState();
+        setChildren(map_state);
+        children->update(deltaTime);
     }
 }
 
-void MainMenuState::render(SDL_Renderer *renderer)
+void MainMenuState::render()
 {
+    if (children) {
+        children->render();
+        return;
+    }
+
     //background
     SDL_Texture* background_texture = loadTexture(renderer, "assets/gui/main_menu.png");
     SDL_RenderCopy(renderer, background_texture, NULL, NULL);

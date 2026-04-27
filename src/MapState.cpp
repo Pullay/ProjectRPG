@@ -1,9 +1,8 @@
-#include "Game.h"
 #include "MapState.h"
 #include "Player.h"
 #include "utils.h"
 
-MapState::MapState(Game* game): game(game)
+MapState::MapState()
 {
     // init
     map = new Map(20, 15);
@@ -18,17 +17,17 @@ MapState::~MapState()
     player = nullptr;
 }
 
-void MapState::update()
+void MapState::update(float deltaTime)
 {}
 
-void MapState::render(SDL_Renderer* renderer)
+void MapState::render()
 {
-    renderMap(renderer);
-    renderPlayer(renderer);
+    renderMap();
+    renderPlayer();
 }
 
 // PRIVATE
-void MapState::renderMap(SDL_Renderer* renderer)
+void MapState::renderMap()
 {
     SDL_Texture* map_tileset = loadTexture(renderer,  "assets/map_tiles.png");
     SDL_Rect src{32, 32, 32, 32};
@@ -49,7 +48,7 @@ void MapState::renderMap(SDL_Renderer* renderer)
     }
 }
 
-void MapState::renderPlayer(SDL_Renderer* renderer)
+void MapState::renderPlayer()
 {
     SDL_Texture* player_spirite = loadTexture(renderer, "assets/player.png");
     SDL_Rect src{24, 32, 24, 32};

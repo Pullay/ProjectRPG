@@ -1,25 +1,24 @@
 #ifndef MAPSTATE_H_
 #define MAPSTATE_H_
 
-#include "Game.h"
+
+#include "GameState.h"
 #include "Map.h"
 #include "Player.h"
-#include "State.h"
 
-class MapState final : public State
+class MapState final : public GameState
 {
     public:
-        MapState(Game* game);
+        MapState();
         ~MapState();
-        void update() override;
-        void render(SDL_Renderer* renderer) override;
+        void update(float deltaTime) override;
+        void render() override;
 
     private:
-        Game* game;
         Map* map;
         Player* player;
 
-        void renderMap(SDL_Renderer* renderer);
-        void renderPlayer(SDL_Renderer* renderer);
+        void renderMap();
+        void renderPlayer();
 };
 #endif
