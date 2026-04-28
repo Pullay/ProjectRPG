@@ -2,7 +2,6 @@
 #define MAINMENU_H_
 
 #include "GameState.h"
-#include "MapState.h"
 
 class MainMenuState final : public GameState
 {
@@ -11,9 +10,5 @@ class MainMenuState final : public GameState
         ~MainMenuState();
         void update(float deltaTime) override;
         void render() override;
-
-    private:
-        State* state;
-        MapState* mapState;
 };
 #endif

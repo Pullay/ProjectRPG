@@ -14,7 +14,7 @@ class GameState: public State
     protected:
         SDL_Renderer* renderer;
         SDL_Event event;
-        GameState* children;
+        GameState* children = nullptr;
 
         void setChildren(GameState* state);
 };
