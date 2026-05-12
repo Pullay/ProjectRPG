@@ -6,10 +6,8 @@
 
 #include <iostream>
 
-Game::Game()
-{
-    state = new MainMenuState();
-}
+Game::Game() : state(new MainMenuState())
+{}
 
 Game::~Game()
 {

@@ -29,12 +29,12 @@ void MapState::render()
 // PRIVATE
 void MapState::renderMap()
 {
-    SDL_Texture* map_tileset = loadTexture(renderer,  "assets/map_tiles.png");
+    SDL_Texture* map_tileset = loadTexture(this->renderer,  "assets/map_tiles.png");
     SDL_Rect src{32, 32, 32, 32};
     int x = 0, y = 0;
     for (auto layer : map->getLayers()) {
         for (auto tile : layer.tiles) {
-            drawTexture(renderer, map_tileset, src, x * 32, y * 32);
+            drawTexture(this->renderer, map_tileset, src, x * 32, y * 32);
 
             ++x;
             if (x >= map->getWidth()) {
@@ -50,7 +50,7 @@ void MapState::renderMap()
 
 void MapState::renderPlayer()
 {
-    SDL_Texture* player_spirite = loadTexture(renderer, "assets/player.png");
+    SDL_Texture* player_spirite = loadTexture(this->renderer, "assets/player.png");
     SDL_Rect src{24, 32, 24, 32};
-    drawTexture(renderer, player_spirite, src, player->getX(), player->getY());
+    drawTexture(this->renderer, player_spirite, src, player->getX(), player->getY());
 }

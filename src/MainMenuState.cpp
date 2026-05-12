@@ -10,22 +10,22 @@ MainMenuState::~MainMenuState()
 
 void MainMenuState::update(float deltaTime)
 {
-    if (event.key.type == SDL_KEYUP) {
+    if (this->event.key.type == SDL_KEYUP) {
         // change state
         auto map_state = new MapState();
-        setChildren(map_state);
+        this->setChildren(map_state);
         children->update(deltaTime);
     }
 }
 
 void MainMenuState::render()
 {
-    if (children) {
-        children->render();
+    if (this->children) {
+        this->children->render();
         return;
     }
 
     //background
-    SDL_Texture* background_texture = loadTexture(renderer, "assets/gui/main_menu.png");
-    SDL_RenderCopy(renderer, background_texture, NULL, NULL);
+    SDL_Texture* background_texture = loadTexture(this->renderer, "assets/gui/main_menu.png");
+    SDL_RenderCopy(this->renderer, background_texture, NULL, NULL);
 }
