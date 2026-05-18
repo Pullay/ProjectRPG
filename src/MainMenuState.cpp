@@ -1,31 +1,22 @@
 #include "MainMenuState.h"
 #include "MapState.h"
-#include "utils.h"
 
-MainMenuState::MainMenuState()
-{}
+#include <SDL_image.h>
 
-MainMenuState::~MainMenuState()
+MainMenuState::MainMenuState(StateManager* stateManager) : stateManager(stateManager)
 {}
 
 void MainMenuState::update(float deltaTime)
 {
-    if (this->event.key.type == SDL_KEYUP) {
-        // change state
-        auto map_state = new MapState();
-        this->setChildren(map_state);
-        children->update(deltaTime);
+    SDL_KeyboardEvent keyboard_event = stateManager->getEvent().key;
+    if (keyboard_event.type == SDL_KEYUP) {
+        stateManager->changeState(new MapState(stateManager));
     }
 }
 
 void MainMenuState::render()
 {
-    if (this->children) {
-        this->children->render();
-        return;
-    }
-
     //background
-    SDL_Texture* background_texture = loadTexture(this->renderer, "assets/gui/main_menu.png");
-    SDL_RenderCopy(this->renderer, background_texture, NULL, NULL);
+    SDL_Texture* background_texture = IMG_LoadTexture(stateManager->getRenderer(), "assets/gui/main_menu.png");
+    SDL_RenderCopy(stateManager->getRenderer(), background_texture, NULL, NULL);
 }

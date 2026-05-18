@@ -1,12 +1,15 @@
 #include "MapState.h"
-#include "Player.h"
-#include "utils.h"
 
-MapState::MapState()
+#include <SDL_image.h>
+
+MapState::MapState(StateManager* stateManager) : stateManager(stateManager)
 {
-    // init
     map = new Map(20, 15);
     player = new Player("");
+    SDL_Texture* map_texture = IMG_LoadTexture(stateManager->getRenderer(), "assets/map_tiles.png");
+    mapTileSet = new Sprite(map_texture);
+    SDL_Texture* player_texture = IMG_LoadTexture(stateManager->getRenderer(),  "assets/player.png");
+    playerSprite = new Sprite(player_texture);
 }
 
 MapState::~MapState()
@@ -15,10 +18,18 @@ MapState::~MapState()
     map = nullptr;
     delete player;
     player = nullptr;
+    delete mapTileSet;
+    mapTileSet = nullptr;
+    delete playerSprite;
+    playerSprite = nullptr;
 }
 
 void MapState::update(float deltaTime)
-{}
+{
+    SDL_KeyboardEvent keyboard_event = stateManager->getEvent().key;
+    movePlayerByInput(keyboard_event);
+    deltaTime = 0;
+}
 
 void MapState::render()
 {
@@ -27,14 +38,17 @@ void MapState::render()
 }
 
 // PRIVATE
+void MapState::movePlayerByInput(SDL_KeyboardEvent event)
+{}
+
 void MapState::renderMap()
 {
-    SDL_Texture* map_tileset = loadTexture(this->renderer,  "assets/map_tiles.png");
-    SDL_Rect src{32, 32, 32, 32};
     int x = 0, y = 0;
     for (auto layer : map->getLayers()) {
         for (auto tile : layer.tiles) {
-            drawTexture(this->renderer, map_tileset, src, x * 32, y * 32);
+            SDL_Rect src{32, 32, 32, 32};
+            SDL_Rect dst{x * 32, y * 32,32, 32};
+            SDL_RenderCopy(stateManager->getRenderer(), mapTileSet->getTexture(), &src, &dst);
 
             ++x;
             if (x >= map->getWidth()) {
@@ -50,7 +64,7 @@ void MapState::renderMap()
 
 void MapState::renderPlayer()
 {
-    SDL_Texture* player_spirite = loadTexture(this->renderer, "assets/player.png");
     SDL_Rect src{24, 32, 24, 32};
-    drawTexture(this->renderer, player_spirite, src, player->getX(), player->getY());
+    SDL_Rect dst{player->getX(), player->getY(), 24, 32};
+    SDL_RenderCopy(stateManager->getRenderer(), playerSprite->getTexture(), &src, &dst);
 }

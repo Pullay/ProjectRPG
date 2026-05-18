@@ -1,11 +1,11 @@
-#ifndef LOGGER_H
-#define LOGGER_H
+#ifndef LOGGER_H_
+#define LOGGER_H_
 
 #include <string>
 
 class Logger
 {
     public:
-        void log(std::string message);
+        static void log(std::string message);
 };
 #endif

@@ -1,27 +1,29 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef GAME_H_
+#define GAME_H_
 
-#include "GameState.h"
-
+#include "StateManager.h"
 #include <SDL.h>
 
-class Game final
+class Game
 {
     public:
+        static const int WINDOW_WIDTH = 640;
+        static const int WINDOW_HEIGHT = 480;
+
         Game();
         ~Game();
+        SDL_Renderer* getRenderer() const;
         void run();
 
     private:
-        GameState* state;
         SDL_Window* window;
         SDL_Renderer* renderer;
-        bool isRunning = true;
-        int lastFrameTime;
+        StateManager* stateManager;
+        bool isRunning = false;
+        int lastFrameTime = 0; 
 
         bool initialize();
         void processInput();
-        void update(float deltaTime);
         void render();
         void shutdown();
 };

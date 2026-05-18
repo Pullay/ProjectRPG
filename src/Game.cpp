@@ -1,40 +1,51 @@
 #include "Game.h"
-#include "MainMenuState.h"
+#include "IntroState.h"
 
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
 #include <iostream>
 
-Game::Game() : state(new MainMenuState())
-{}
+Game::Game()
+{
+    initialize();
+    stateManager  = new StateManager(renderer);
+    stateManager->changeState(new IntroState(stateManager));
+}
 
 Game::~Game()
 {
-    delete state;
-    state = nullptr;
+    delete stateManager;
+    stateManager = nullptr;
+    isRunning = false;
+    lastFrameTime = 0;
+}
+
+SDL_Renderer* Game::getRenderer() const
+{
+    return renderer;
 }
 
 void Game::run()
 {
-    initialize();
     // Main loop
     while (isRunning) {
         float current_time = SDL_GetTicks();
         float delta_time = (current_time - lastFrameTime) / 1000.0f;
         lastFrameTime = current_time;
         processInput();
-        update(delta_time);
+        stateManager->update(delta_time);
         render();
         SDL_Delay(16);
     }
+
     shutdown();
 }
 
 // PRIVATE
 bool Game::initialize()
 {
-     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
+    if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         std::cout << SDL_GetError() <<"\n";
         return false;
     }
@@ -49,8 +60,7 @@ bool Game::initialize()
         return false;
     }
 
-    window = SDL_CreateWindow("ProjectRPG", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_OPENGL);
-
+    window = SDL_CreateWindow("ProjectRPG", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     if (!renderer) {
@@ -58,7 +68,6 @@ bool Game::initialize()
         return false;
     }
 
-    state->setRenderer(renderer);
     isRunning = true;
     lastFrameTime = SDL_GetTicks();
     return true;
@@ -71,20 +80,15 @@ void Game::processInput()
         if (event.type == SDL_QUIT) {
             isRunning = false;
         }
-        state->handleEvent(event);
+        stateManager->handleEvent(event);
     }
-}
-
-void Game::update(float deltaTime)
-{
-    state->update(deltaTime);
 }
 
 void Game::render()
 {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
-    state->render();
+    stateManager->render();
     SDL_RenderPresent(renderer);
 }
 
@@ -96,3 +100,4 @@ void Game::shutdown()
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
+

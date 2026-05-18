@@ -1,13 +1,13 @@
-#ifndef MAINMENUSTATE_H_
-#define MAINMENUSTATE_H_
+#ifndef INTROSTATE_H_
+#define INTROSTATE_H_
 
 #include "State.h"
 #include "StateManager.h"
 
-class MainMenuState final : public State
+class IntroState final : public State
 {
     public:
-        MainMenuState(StateManager* stateManager);
+        IntroState(StateManager* stateManager);
         void update(float deltaTime) override;
         void render() override;
 
