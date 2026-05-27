@@ -2,6 +2,7 @@
 #define GAME_H_
 
 #include "StateManager.h"
+
 #include <SDL.h>
 
 class Game

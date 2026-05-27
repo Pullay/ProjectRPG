@@ -13,6 +13,11 @@ void Sprite::setBlandMode(SDL_BlendMode blendMode)
     SDL_SetTextureBlendMode(texture, blendMode);
 }
 
+void Sprite::setTexture(SDL_Texture* _texture)
+{
+    texture = _texture;
+}
+
 SDL_Texture* Sprite::getTexture() const
 {
     return texture;

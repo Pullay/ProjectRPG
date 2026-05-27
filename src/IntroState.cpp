@@ -11,7 +11,7 @@ void IntroState::update(float deltaTime)
     this->stateManager->changeState(new MainMenuState(this->stateManager));
 }
 
-void IntroState::render()
+void IntroState::render(SDL_Renderer* renderer)
 {
     std::cout << "Intro" << "\n";
 }

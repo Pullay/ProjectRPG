@@ -9,7 +9,7 @@
 Game::Game()
 {
     initialize();
-    stateManager  = new StateManager(renderer);
+    stateManager  = new StateManager();
     stateManager->changeState(new IntroState(stateManager));
 }
 
@@ -88,7 +88,7 @@ void Game::render()
 {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
-    stateManager->render();
+    stateManager->render(renderer);
     SDL_RenderPresent(renderer);
 }
 

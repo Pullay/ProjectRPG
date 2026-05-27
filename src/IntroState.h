@@ -9,7 +9,7 @@ class IntroState final : public State
     public:
         IntroState(StateManager* stateManager);
         void update(float deltaTime) override;
-        void render() override;
+        void render(SDL_Renderer* renderer) override;
 
     private:
         StateManager* stateManager;

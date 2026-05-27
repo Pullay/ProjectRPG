@@ -4,22 +4,19 @@
 #include "State.h"
 
 #include <SDL.h>
-#include <SDL_events.h>
 
 class StateManager final
 {
     public:
-        StateManager(SDL_Renderer* renderer);
+        StateManager();
         void handleEvent(SDL_Event event);
         SDL_Event getEvent();
-        SDL_Renderer* getRenderer();
         void changeState(State* state);
         State* getState();
         void update(float deltaTime);
-        void render();
+        void render(SDL_Renderer* renderer);
 
     private:
-        SDL_Renderer* renderer;
         SDL_Event event;
         State* currentState = nullptr;
 };

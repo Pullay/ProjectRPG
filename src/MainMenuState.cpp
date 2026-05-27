@@ -33,13 +33,14 @@ void MainMenuState::update(float deltaTime)
     }
 }
 
-void MainMenuState::render()
+void MainMenuState::render(SDL_Renderer* renderer)
 {
     //background
-    SDL_Texture* background_texture = IMG_LoadTexture(stateManager->getRenderer(), "assets/gui/main_menu.png");
-    SDL_RenderCopy(stateManager->getRenderer(), background_texture, NULL, NULL);
+    SDL_Texture* background_texture = IMG_LoadTexture(renderer, "assets/gui/main_menu.png");
+    SDL_QueryTexture(background_texture, NULL, NULL, 0, 0);
+    SDL_RenderCopy(renderer, background_texture, NULL, NULL);
     // Start button
-    SDL_Texture* text_texture = SDL_CreateTextureFromSurface(stateManager->getRenderer(), button->getTextSurface());
+    SDL_Texture* text_texture = SDL_CreateTextureFromSurface(renderer, button->getTextSurface());
     auto dst = button->getRect();
-    SDL_RenderCopy(stateManager->getRenderer(), text_texture, NULL, &dst);
+    SDL_RenderCopy(renderer, text_texture, NULL, &dst);
 }

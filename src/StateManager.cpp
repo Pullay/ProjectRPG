@@ -1,6 +1,6 @@
 #include "StateManager.h"
 
-StateManager::StateManager(SDL_Renderer* renderer) : renderer(renderer)
+StateManager::StateManager()
 {}
 
 void StateManager::handleEvent(SDL_Event _event)
@@ -11,11 +11,6 @@ void StateManager::handleEvent(SDL_Event _event)
 SDL_Event StateManager::getEvent()
 {
     return event;
-}
-
-SDL_Renderer* StateManager::getRenderer()
-{
-    return renderer;
 }
 
 void StateManager::changeState(State* state)
@@ -36,9 +31,9 @@ void StateManager::update(float deltaTime)
         currentState->update(deltaTime);
 }
 
-void StateManager::render()
+void StateManager::render(SDL_Renderer* renderer)
 {
     if (currentState)
-        currentState->render();
+        currentState->render(renderer);
 }
 

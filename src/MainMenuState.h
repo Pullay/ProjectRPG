@@ -11,7 +11,7 @@ class MainMenuState final : public State
         MainMenuState(StateManager* stateManager);
         ~MainMenuState();
         void update(float deltaTime) override;
-        void render() override;
+        void render(SDL_Renderer* renderer) override;
 
     private:
         StateManager* stateManager;
