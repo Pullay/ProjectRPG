@@ -1,5 +1,6 @@
 #include "MapState.h"
 #include "Sprite.h"
+#include "utils.h"
 
 #include <SDL_image.h>
 
@@ -36,13 +37,11 @@ void MapState::movePlayerByInput(SDL_KeyboardEvent event)
 void MapState::renderMap(SDL_Renderer* renderer)
 {
     SDL_Texture* map_texture = IMG_LoadTexture(renderer, "assets/map_tiles.png");
-    Sprite map_tileset(map_texture);
+    Sprite map_tileset(map_texture, {32, 32, 32, 32});
     int x = 0, y = 0;
     for (auto layer : map->getLayers()) {
         for (auto tile : layer.tiles) {
-            SDL_Rect src{32, 32, 32, 32};
-            SDL_Rect dst{x * 32, y * 32,32, 32};
-            SDL_RenderCopy(renderer, map_tileset.getTexture(), &src, &dst);
+            drawSprite(renderer, map_tileset, x * 32, y * 32);
 
             ++x;
             if (x >= map->getWidth()) {
@@ -59,8 +58,6 @@ void MapState::renderMap(SDL_Renderer* renderer)
 void MapState::renderPlayer(SDL_Renderer* renderer)
 {
     SDL_Texture* player_texture = IMG_LoadTexture(renderer, "assets/player.png");
-    Sprite player_sprite(player_texture);
-    SDL_Rect src{24, 32, 24, 32};
-    SDL_Rect dst{player->getX(), player->getY(), 24, 32};
-    SDL_RenderCopy(renderer, player_sprite.getTexture(), &src, &dst);
+    Sprite player_sprite(player_texture, {24, 32, 24, 32});
+    drawSprite(renderer, player_sprite, player->getX(), player->getY());
 }
