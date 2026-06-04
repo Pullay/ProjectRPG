@@ -1,13 +1,18 @@
 #include "MapState.h"
+#include "Game.h"
+#include "Player.h"
 #include "Sprite.h"
 #include "utils.h"
 
 #include <SDL_image.h>
 
+#include <map>
+#include <sstream>
+
 MapState::MapState(StateManager* stateManager) : stateManager(stateManager)
 {
     map = new Map(20, 15);
-    player = new Player("");
+    player = new Player("", Game::WINDOW_WIDTH / 2, Game::WINDOW_HEIGHT / 2);
 }
 
 MapState::~MapState()
@@ -20,19 +25,51 @@ MapState::~MapState()
 
 void MapState::update(float deltaTime)
 {
-    SDL_KeyboardEvent keyboard_event = stateManager->getEvent().key;
-    movePlayerByInput(keyboard_event);
+    SDL_Event event = stateManager->getEvent();
+    movePlayerByInput(event.key);
 }
 
 void MapState::render(SDL_Renderer* renderer)
 {
     renderMap(renderer);
     renderPlayer(renderer);
+    renderTextBox(renderer);
 }
 
-// PRIVATE
 void MapState::movePlayerByInput(SDL_KeyboardEvent event)
-{}
+{
+    if (event.repeat == 0) {
+        if (event.keysym.scancode == SDL_SCANCODE_A) {
+            player->move(-1, 0);
+            player->setState(PlayerState::RIGHT);
+        }
+        if (event.keysym.scancode == SDL_SCANCODE_D) {
+            player->move(1, 0);
+            player->setState(PlayerState::LEFT);
+        }
+        if (event.keysym.scancode == SDL_SCANCODE_W) {
+            player->move(0, -1);
+            player->setState(PlayerState::UP);
+        }
+        if (event.keysym.scancode == SDL_SCANCODE_S) {
+            player->setState(PlayerState::DOWN);
+            player->move(0, 1);
+        }
+    }
+
+    if (player->getX() < 0) {
+        player->move(1, 0);
+    }
+    if (player->getX() > Game::WINDOW_WIDTH - 32) {
+        player->move(-1, 0);
+    }
+    if (player->getY() < 0) {
+        player->move(0, 1);
+    }
+    if (player->getY() > Game::WINDOW_HEIGHT - 32) {
+        player->move(0, -1);
+    }
+}
 
 void MapState::renderMap(SDL_Renderer* renderer)
 {
@@ -57,7 +94,21 @@ void MapState::renderMap(SDL_Renderer* renderer)
 
 void MapState::renderPlayer(SDL_Renderer* renderer)
 {
+    std::map<PlayerState, SDL_Rect> clips;
+    clips[PlayerState::UP] = {24, 0, 24, 32};
+    clips[PlayerState::LEFT] = {24, 32, 24, 32};
+    clips[PlayerState::DOWN] = {24, 64, 24, 32};
+    clips[PlayerState::RIGHT] = {24, 96, 24, 32};
     SDL_Texture* player_texture = IMG_LoadTexture(renderer, "assets/player.png");
-    Sprite player_sprite(player_texture, {24, 32, 24, 32});
+    Sprite player_sprite(player_texture);
+    player_sprite.setRect(clips[player->getState()]);
     drawSprite(renderer, player_sprite, player->getX(), player->getY());
+}
+
+void MapState::renderTextBox(SDL_Renderer* renderer)
+{
+    std::stringstream steam;
+    steam << "Player x" << player->getX() << ":y" << player->getY();
+    TTF_Font* font = TTF_OpenFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 16);
+    drawText(renderer, {steam.str()}, font, {0, 0,0, 255}, {5, Game::WINDOW_HEIGHT - 15, 20 ,20});
 }

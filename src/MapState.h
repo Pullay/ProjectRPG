@@ -22,5 +22,6 @@ class MapState final : public State
         void movePlayerByInput(SDL_KeyboardEvent event);
         void renderMap(SDL_Renderer* renderer);
         void renderPlayer(SDL_Renderer* renderer);
+        void renderTextBox(SDL_Renderer* renderer);
 };
 #endif

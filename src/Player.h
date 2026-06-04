@@ -7,25 +7,20 @@
 
 enum class PlayerState
 {
-    IDLE_UP = 0,
-    WALKING_UP,
-    IDLE_LEFT,
-    WALKING_LEFT,
-    IDLE_DOWN,
-    WALKING_DOWN,
-    IDLE_RIGHT,
-    WALKING_RIGHT
+    UP = 0, LEFT, DOWN, RIGHT
 };
 
 class Player
 {
     public:
-        Player(const std::string name);
+        Player(const std::string name, int x, int y);
         ~Player();
         std::string getName() const;
         void move(int mx, int my);
         int getX() const;
         int getY() const;
+        void setState(PlayerState state);
+        PlayerState getState();
 
     private:
         const std::string name;

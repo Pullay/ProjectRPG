@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player(const std::string name) : name(name)
+Player::Player(const std::string name, int x, int y) : name(name), x(x), y(y)
 {}
 
 Player::~Player()
@@ -25,4 +25,14 @@ int Player::getX() const
 int Player::getY() const
 {
     return y;
+}
+
+void Player::setState(PlayerState _state)
+{
+    state = _state;
+}
+
+PlayerState Player::getState()
+{
+    return state;
 }
