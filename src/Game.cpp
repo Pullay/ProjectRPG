@@ -8,7 +8,6 @@
 
 Game::Game()
 {
-    initialize();
     stateManager  = new StateManager();
     stateManager->changeState(new IntroState(stateManager));
 }
@@ -28,6 +27,11 @@ SDL_Renderer* Game::getRenderer() const
 
 void Game::run()
 {
+    if (!initialize()) {
+        std::cout << "Failed to initialize!" << "\n";
+        return;
+    }
+
     // Main loop
     while (isRunning) {
         float current_time = SDL_GetTicks();
@@ -36,7 +40,7 @@ void Game::run()
         processInput();
         stateManager->update(delta_time);
         render();
-        SDL_Delay(16);
+        SDL_Delay(60);
     }
 
     shutdown();
@@ -97,7 +101,9 @@ void Game::shutdown()
     TTF_Quit();
     IMG_Quit();
     SDL_DestroyRenderer(renderer);
+    renderer = nullptr;
     SDL_DestroyWindow(window);
+    window = nullptr;
     SDL_Quit();
 }
 
