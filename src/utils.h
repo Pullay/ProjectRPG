@@ -19,5 +19,6 @@ inline void drawText(SDL_Renderer* renderer, std::string text, TTF_Font* font, S
     rect.w = text_surface->w;
     rect.h = text_surface->h;
     SDL_RenderCopy(renderer, text_texture,NULL, &rect);
+    SDL_DestroyTexture(text_texture);
     SDL_FreeSurface(text_surface);
 }

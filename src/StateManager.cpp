@@ -3,6 +3,12 @@
 StateManager::StateManager()
 {}
 
+StateManager::~StateManager()
+{
+    delete currentState;
+    currentState = nullptr;
+}
+
 void StateManager::handleEvent(SDL_Event _event)
 {
     event = _event;

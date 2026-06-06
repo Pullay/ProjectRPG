@@ -10,6 +10,7 @@ MainMenuState::MainMenuState(StateManager* stateManager) : stateManager(stateMan
     TTF_Font* font = TTF_OpenFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 32);
     button = new MenuButton(Game::WINDOW_WIDTH/2, Game::WINDOW_HEIGHT/2, 42, 42);
     button->addText(font, "Start", SDL_Color{0, 255, 0, 255});
+    TTF_CloseFont(font);
 }
 
 MainMenuState::~MainMenuState()
@@ -43,4 +44,6 @@ void MainMenuState::render(SDL_Renderer* renderer)
     SDL_Texture* text_texture = SDL_CreateTextureFromSurface(renderer, button->getTextSurface());
     auto dst = button->getRect();
     SDL_RenderCopy(renderer, text_texture, NULL, &dst);
+    SDL_DestroyTexture(background_texture);
+    SDL_DestroyTexture(text_texture);
 }

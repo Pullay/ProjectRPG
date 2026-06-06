@@ -5,6 +5,7 @@
 #include "utils.h"
 
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 
 #include <map>
 #include <sstream>
@@ -90,6 +91,7 @@ void MapState::renderMap(SDL_Renderer* renderer)
             }
         }
     }
+    SDL_DestroyTexture(map_texture);
 }
 
 void MapState::renderPlayer(SDL_Renderer* renderer)
@@ -103,6 +105,7 @@ void MapState::renderPlayer(SDL_Renderer* renderer)
     Sprite player_sprite(player_texture);
     player_sprite.setRect(clips[player->getState()]);
     drawSprite(renderer, player_sprite, player->getX(), player->getY());
+    SDL_DestroyTexture(player_texture);
 }
 
 void MapState::renderTextBox(SDL_Renderer* renderer)
@@ -111,4 +114,5 @@ void MapState::renderTextBox(SDL_Renderer* renderer)
     steam << "Player x" << player->getX() << ":y" << player->getY();
     TTF_Font* font = TTF_OpenFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 16);
     drawText(renderer, {steam.str()}, font, {0, 0,0, 255}, {5, Game::WINDOW_HEIGHT - 15, 20 ,20});
+    TTF_CloseFont(font);
 }

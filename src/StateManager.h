@@ -9,6 +9,7 @@ class StateManager final
 {
     public:
         StateManager();
+        ~StateManager();
         void handleEvent(SDL_Event event);
         SDL_Event getEvent();
         void changeState(State* state);
