@@ -1,6 +1,6 @@
 #include "MapState.h"
 #include "Game.h"
-#include "Player.h"
+#include "MapLoader.h"
 #include "Sprite.h"
 #include "utils.h"
 
@@ -9,10 +9,11 @@
 
 #include <map>
 #include <sstream>
+#include <vector>
 
 MapState::MapState(StateManager* stateManager) : stateManager(stateManager)
 {
-    map = new Map(20, 15);
+    map = MapLoader::load();
     player = new Player("", Game::WINDOW_WIDTH / 2, Game::WINDOW_HEIGHT / 2);
 }
 
@@ -74,11 +75,15 @@ void MapState::movePlayerByInput(SDL_KeyboardEvent event)
 
 void MapState::renderMap(SDL_Renderer* renderer)
 {
+    std::vector<SDL_Rect> tileset;
+    tileset.push_back({0, 0, 32, 32});
+    tileset.push_back({32, 32, 32, 32});
     SDL_Texture* map_texture = IMG_LoadTexture(renderer, "assets/map_tiles.png");
-    Sprite map_tileset(map_texture, {32, 32, 32, 32});
+    Sprite map_tileset(map_texture);
     int x = 0, y = 0;
     for (auto layer : map->getLayers()) {
         for (auto tile : layer.tiles) {
+            map_tileset.setRect(tileset[tile]);
             drawSprite(renderer, map_tileset, x * 32, y * 32);
 
             ++x;
