@@ -1,9 +1,16 @@
 # ProjectRPG
 
-WIP
+An open source 2D RPG written in c++ and SDL2
 
-## Dependencies
-- [SDL2] (https://github.com/libsdl-org/SDL/tree/SDL2)
-- [SDL_mixer] (https://github.com/libsdl-org/SDL_mixer/tree/SDL2)
-- [SDL_image] (https://github.com/libsdl-org/SDL_image/tree/SDL2)
-- [SDL_ttf] (https://github.com/libsdl-org/SDL_ttf/tree/SDL2)
+## Build the project
+So far, the project can only be built for the Linux system.
+```
+cd ProjectRPG
+mkdir build
+cd build
+cmake ..
+cmake --build .
+```
+## Licensing
+The source code is available under the MIT license.
+All resources are available under the CC0 license.
