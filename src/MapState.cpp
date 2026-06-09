@@ -1,16 +1,18 @@
 #include "MapState.h"
 #include "Game.h"
+#include "Label.h"
 #include "MapLoader.h"
 #include "Sprite.h"
 #include "utils.h"
 
-#include <SDL_image.h>
 #include <SDL_ttf.h>
 
 #include <map>
 #include <sstream>
 #include <vector>
 
+//TODO: This class has too many responsibilities.
+//      It will need to be divided into several smaller ones.
 MapState::MapState(StateManager* stateManager) : stateManager(stateManager)
 {
     map = MapLoader::load();
@@ -78,7 +80,7 @@ void MapState::renderMap(SDL_Renderer* renderer)
     std::vector<SDL_Rect> tileset;
     tileset.push_back({0, 0, 32, 32});
     tileset.push_back({32, 32, 32, 32});
-    SDL_Texture* map_texture = IMG_LoadTexture(renderer, "assets/map_tiles.png");
+    SDL_Texture* map_texture = loadTexture(renderer, "assets/map_tiles.png");
     Sprite map_tileset(map_texture);
     int x = 0, y = 0;
     for (auto layer : map->getLayers()) {
@@ -106,7 +108,7 @@ void MapState::renderPlayer(SDL_Renderer* renderer)
     clips[PlayerState::LEFT] = {24, 32, 24, 32};
     clips[PlayerState::DOWN] = {24, 64, 24, 32};
     clips[PlayerState::RIGHT] = {24, 96, 24, 32};
-    SDL_Texture* player_texture = IMG_LoadTexture(renderer, "assets/player.png");
+    SDL_Texture* player_texture = loadTexture(renderer, "assets/player.png");
     Sprite player_sprite(player_texture);
     player_sprite.setRect(clips[player->getState()]);
     drawSprite(renderer, player_sprite, player->getX(), player->getY());
@@ -118,6 +120,8 @@ void MapState::renderTextBox(SDL_Renderer* renderer)
     std::stringstream steam;
     steam << "Player x" << player->getX() << ":y" << player->getY();
     TTF_Font* font = TTF_OpenFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 16);
-    drawText(renderer, {steam.str()}, font, {0, 0,0, 255}, {5, Game::WINDOW_HEIGHT - 15, 20 ,20});
+    Label label({steam.str()}, font, 5, Game::WINDOW_HEIGHT - 15);
+    label.setColor({0, 0, 0, 255});
+    label.draw(renderer);
     TTF_CloseFont(font);
 }

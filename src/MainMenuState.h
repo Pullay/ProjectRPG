@@ -1,7 +1,7 @@
 #ifndef MAINMENUSTATE_H_
 #define MAINMENUSTATE_H_
 
-#include "MenuButton.h"
+#include "Button.h"
 #include "State.h"
 #include "StateManager.h"
 
@@ -15,6 +15,6 @@ class MainMenuState final : public State
 
     private:
         StateManager* stateManager;
-        MenuButton* button;
+        Button* button;
 };
 #endif
