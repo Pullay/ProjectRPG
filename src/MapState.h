@@ -11,7 +11,7 @@ class MapState final : public State
     public:
         MapState(StateManager* stateManager);
         ~MapState();
-        void update(float deltaTime) override;
+        void update(const float& deltaTime) override;
         void render(SDL_Renderer* renderer) override;
 
     private:

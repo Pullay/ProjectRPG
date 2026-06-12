@@ -20,7 +20,7 @@ MainMenuState::~MainMenuState()
     button = nullptr;
 }
 
-void MainMenuState::update(float deltaTime)
+void MainMenuState::update(const float& deltaTime)
 {
     SDL_Event e = stateManager->getEvent();
     if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP) {

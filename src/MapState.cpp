@@ -27,7 +27,7 @@ MapState::~MapState()
     player = nullptr;
 }
 
-void MapState::update(float deltaTime)
+void MapState::update(const float& deltaTime)
 {
     SDL_Event event = stateManager->getEvent();
     movePlayerByInput(event.key);

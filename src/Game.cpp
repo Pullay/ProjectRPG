@@ -33,14 +33,19 @@ void Game::run()
     }
 
     // Main loop
+    float frame_delay = 1000.0f / 60.0f;
     while (isRunning) {
         float current_time = SDL_GetTicks();
-        float delta_time = (current_time - lastFrameTime) / 1000.0f;
+        float delta_time = current_time - lastFrameTime;
         lastFrameTime = current_time;
         processInput();
         stateManager->update(delta_time);
         render();
-        SDL_Delay(60);
+        // @source https://github.com/falltergeist/falltergeist/blob/develop/src/Game/Game.cpp
+        if (frame_delay > delta_time) {
+            SDL_Delay(frame_delay - delta_time);
+            delta_time += frame_delay - delta_time;
+        }
     }
 
     shutdown();

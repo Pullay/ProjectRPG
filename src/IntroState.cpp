@@ -6,7 +6,7 @@
 IntroState::IntroState(StateManager* stateManager) : stateManager(stateManager)
 {}
 
-void IntroState::update(float deltaTime)
+void IntroState::update(const float& deltaTime)
 {
     this->stateManager->changeState(new MainMenuState(this->stateManager));
 }

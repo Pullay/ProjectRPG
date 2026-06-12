@@ -10,7 +10,7 @@ class MainMenuState final : public State
     public:
         MainMenuState(StateManager* stateManager);
         ~MainMenuState();
-        void update(float deltaTime) override;
+        void update(const float& deltaTime) override;
         void render(SDL_Renderer* renderer) override;
 
     private:
