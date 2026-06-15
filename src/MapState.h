@@ -1,10 +1,13 @@
 #ifndef MAPSTATE_H_
 #define MAPSTATE_H_
 
+#include "Enemy.h"
 #include "Map.h"
 #include "Player.h"
 #include "State.h"
 #include "StateManager.h"
+
+#include <vector>
 
 class MapState final : public State
 {
@@ -18,10 +21,13 @@ class MapState final : public State
         StateManager* stateManager;
         Map* map;
         Player* player;
+        std::vector<Enemy*> enemies;
 
         void movePlayerByInput(SDL_KeyboardEvent event);
+        void spawnEnemies();
         void renderMap(SDL_Renderer* renderer);
         void renderPlayer(SDL_Renderer* renderer);
+        void renderEnemies(SDL_Renderer* renderer);
         void renderTextBox(SDL_Renderer* renderer);
 };
 #endif

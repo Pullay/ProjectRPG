@@ -17,6 +17,7 @@ MapState::MapState(StateManager* stateManager) : stateManager(stateManager)
 {
     map = MapLoader::load();
     player = new Player("", Game::WINDOW_WIDTH / 2, Game::WINDOW_HEIGHT / 2);
+    spawnEnemies();
 }
 
 MapState::~MapState()
@@ -25,6 +26,10 @@ MapState::~MapState()
     map = nullptr;
     delete player;
     player = nullptr;
+    for (auto it : enemies) {
+        delete it;
+    }
+    enemies.clear();
 }
 
 void MapState::update(const float& deltaTime)
@@ -37,6 +42,7 @@ void MapState::render(SDL_Renderer* renderer)
 {
     renderMap(renderer);
     renderPlayer(renderer);
+    renderEnemies(renderer);
     renderTextBox(renderer);
 }
 
@@ -73,6 +79,13 @@ void MapState::movePlayerByInput(SDL_KeyboardEvent event)
     if (player->getY() > Game::WINDOW_HEIGHT - 32) {
         player->move(0, -1);
     }
+}
+
+void MapState::spawnEnemies()
+{
+    // spaw test enemy
+    auto enemy = new Enemy("test", (Game::WINDOW_WIDTH / 2) - 10, (Game::WINDOW_HEIGHT / 2) - 10);
+    enemies.push_back(enemy);
 }
 
 void MapState::renderMap(SDL_Renderer* renderer)
@@ -114,6 +127,26 @@ void MapState::renderPlayer(SDL_Renderer* renderer)
     player_sprite.setRect(clips[player->getState()]);
     drawSprite(renderer, player_sprite, player->getX(), player->getY());
     SDL_DestroyTexture(player_texture);
+}
+
+void MapState::renderEnemies(SDL_Renderer* renderer)
+{
+    if (enemies.empty()) {
+        return;
+    }
+
+    // temp texture
+    SDL_Texture* enemy_texture = loadTexture(renderer, "assets/player.png");
+    Sprite enemy_sprite(enemy_texture, {24, 64, 24, 32});
+    TTF_Font* font = TTF_OpenFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 12);
+    for (auto enemy : enemies) {
+        Label label(enemy->getName(), font, enemy->getX(), enemy->getY() - 10);
+        label.draw(renderer);
+
+        drawSprite(renderer, enemy_sprite, enemy->getX(), enemy->getY());
+    }
+    TTF_CloseFont(font);
+    SDL_DestroyTexture(enemy_texture);
 }
 
 void MapState::renderTextBox(SDL_Renderer* renderer)
