@@ -4,7 +4,6 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
-#include <cassert>
 #include <string>
 
 // TODO: Add a texture loading check
@@ -16,7 +15,7 @@ inline SDL_Texture* loadTexture(SDL_Renderer* renderer, std::string path)
 }
 
 // TODO: Add a font upload check
-inline TTF_Font* loadFont(std::string path, int fontSize)
+inline TTF_Font* loadFont(std::string path, uint8_t fontSize)
 {
     TTF_Font* font = nullptr;
     font = TTF_OpenFont(path.c_str(), fontSize);

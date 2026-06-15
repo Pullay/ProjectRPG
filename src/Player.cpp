@@ -1,7 +1,9 @@
 #include "Player.h"
 
 Player::Player(const std::string name, int x, int y) : name(name), x(x), y(y)
-{}
+{
+    state = State::IDLE;
+}
 
 Player::~Player()
 {}
@@ -27,12 +29,12 @@ int Player::getY() const
     return y;
 }
 
-void Player::setState(PlayerState _state)
+void Player::setState(State _state)
 {
     state = _state;
 }
 
-PlayerState Player::getState()
+Player::State Player::getState()
 {
     return state;
 }

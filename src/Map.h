@@ -5,23 +5,27 @@
 
 #include <vector>
 
+struct MapTile
+{
+    uint8_t id;
+};
+
 struct MapLayer
 {
-    std::vector<int> tiles;
+    std::vector<MapTile> tiles;
 };
 
 class Map
 {
     public:
-        Map(int width, int height);
-        ~Map();
-        int getWidth() const;
-        int getHidth() const;
+        Map(uint8_t width, uint8_t height);
+        uint8_t getWidth() const;
+        uint8_t getHidth() const;
         void addLayer(MapLayer layer);
         std::vector<MapLayer> getLayers();
 
     private:
-        int width, height;
+        uint8_t width, height;
         std::vector<MapLayer> layers;
 };
 #endif

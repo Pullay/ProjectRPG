@@ -20,8 +20,8 @@ class Game
         SDL_Window* window;
         SDL_Renderer* renderer;
         StateManager* stateManager;
-        bool isRunning = false;
-        int lastFrameTime = 0; 
+        bool running = false;
+        int lastFrameTime; 
 
         bool initialize();
         void processInput();

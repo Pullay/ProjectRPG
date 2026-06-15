@@ -1,9 +1,12 @@
 #include "MapLoader.h"
+#include "Map.h"
+
+#include <vector>
 
 Map* MapLoader::load()
 {
     //TODO: Temp
-    std::vector<int> tiles = {
+    std::vector<int> map_data = {
         1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
         1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
         1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -20,6 +23,12 @@ Map* MapLoader::load()
         1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
         1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
     };
+    std::vector<MapTile> tiles;
+    for (auto tile_id : map_data) {
+        MapTile tile;
+        tile.id = tile_id;
+        tiles.push_back(tile);
+    }
     MapLayer layer;
     layer.tiles = tiles;
     auto map = new Map(20, 15);

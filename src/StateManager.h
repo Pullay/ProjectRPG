@@ -14,7 +14,7 @@ class StateManager final
         SDL_Event getEvent();
         void changeState(State* state);
         State* getState();
-        void update(float deltaTime);
+        void update(const float& deltaTime);
         void render(SDL_Renderer* renderer);
 
     private:

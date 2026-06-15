@@ -1,17 +1,14 @@
 #include "Map.h"
 
-Map::Map(int width, int height) : width(width), height(height)
+Map::Map(uint8_t width, uint8_t height) : width(width), height(height)
 {}
 
-Map::~Map()
-{}
-
-int Map::getWidth() const
+uint8_t Map::getWidth() const
 {
     return width;
 }
 
-int Map::getHidth() const
+uint8_t Map::getHidth() const
 {
     return height;
 }

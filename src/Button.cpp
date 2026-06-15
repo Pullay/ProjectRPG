@@ -1,7 +1,7 @@
 #include "Button.h"
 #include "utils.h"
 
-Button::Button(int x, int y, int width, int height)
+Button::Button(int x, int y, uint8_t width, uint8_t height)
   : x(x)
   , y(y)
   , width(width)
@@ -24,12 +24,12 @@ int Button::getY() const
     return y;
 }
 
-int Button::getWidth() const
+uint8_t Button::getWidth() const
 {
     return width;
 }
 
-int Button::getHeight() const
+uint8_t Button::getHeight() const
 {
     return height;
 }

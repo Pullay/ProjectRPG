@@ -9,15 +9,13 @@
 Game::Game()
 {
     stateManager  = new StateManager();
-    stateManager->changeState(new IntroState(stateManager));
+    stateManager->changeState(new IntroState(stateManager));  
 }
 
 Game::~Game()
 {
     delete stateManager;
     stateManager = nullptr;
-    isRunning = false;
-    lastFrameTime = 0;
 }
 
 SDL_Renderer* Game::getRenderer() const
@@ -34,7 +32,7 @@ void Game::run()
 
     // Main loop
     float frame_delay = 1000.0f / 60.0f;
-    while (isRunning) {
+    while (running) {
         float current_time = SDL_GetTicks();
         float delta_time = current_time - lastFrameTime;
         lastFrameTime = current_time;
@@ -77,7 +75,7 @@ bool Game::initialize()
         return false;
     }
 
-    isRunning = true;
+    running = true;
     lastFrameTime = SDL_GetTicks();
     return true;
 }
@@ -87,7 +85,7 @@ void Game::processInput()
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
-            isRunning = false;
+            running = false;
         }
         stateManager->handleEvent(event);
     }

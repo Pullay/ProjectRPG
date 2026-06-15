@@ -31,7 +31,7 @@ State* StateManager::getState()
     return currentState;
 }
 
-void StateManager::update(float deltaTime)
+void StateManager::update(const float& deltaTime)
 {
     if (currentState)
         currentState->update(deltaTime);

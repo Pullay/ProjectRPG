@@ -45,18 +45,18 @@ void MapState::movePlayerByInput(SDL_KeyboardEvent event)
     if (event.repeat == 0) {
         if (event.keysym.scancode == SDL_SCANCODE_A) {
             player->move(-1, 0);
-            player->setState(PlayerState::RIGHT);
+            player->setState(Player::WALK_RIGHT);
         }
         if (event.keysym.scancode == SDL_SCANCODE_D) {
             player->move(1, 0);
-            player->setState(PlayerState::LEFT);
+            player->setState(Player::WALK_LEFT);
         }
         if (event.keysym.scancode == SDL_SCANCODE_W) {
             player->move(0, -1);
-            player->setState(PlayerState::UP);
+            player->setState(Player::WALK_UP);
         }
         if (event.keysym.scancode == SDL_SCANCODE_S) {
-            player->setState(PlayerState::DOWN);
+            player->setState(Player::WALK_DOWN);
             player->move(0, 1);
         }
     }
@@ -85,13 +85,13 @@ void MapState::renderMap(SDL_Renderer* renderer)
     int x = 0, y = 0;
     for (auto layer : map->getLayers()) {
         for (auto tile : layer.tiles) {
-            map_tileset.setRect(tileset[tile]);
+            map_tileset.setRect(tileset[tile.id]);
             drawSprite(renderer, map_tileset, x * 32, y * 32);
 
-            ++x;
+            x++;
             if (x >= map->getWidth()) {
                 x = 0;
-                ++y;
+                y++;
 
                 if (y >= map->getHidth())
                     y = 0;
@@ -103,11 +103,12 @@ void MapState::renderMap(SDL_Renderer* renderer)
 
 void MapState::renderPlayer(SDL_Renderer* renderer)
 {
-    std::map<PlayerState, SDL_Rect> clips;
-    clips[PlayerState::UP] = {24, 0, 24, 32};
-    clips[PlayerState::LEFT] = {24, 32, 24, 32};
-    clips[PlayerState::DOWN] = {24, 64, 24, 32};
-    clips[PlayerState::RIGHT] = {24, 96, 24, 32};
+    std::map<Player::State, SDL_Rect> clips;
+    clips[Player::IDLE] = {24, 64, 24, 32};
+    clips[Player::WALK_UP] = {24, 0, 24, 32};
+    clips[Player::WALK_LEFT] = {24, 32, 24, 32};
+    clips[Player::WALK_DOWN] = {24, 64, 24, 32};
+    clips[Player::WALK_RIGHT] = {24, 96, 24, 32};
     SDL_Texture* player_texture = loadTexture(renderer, "assets/player.png");
     Sprite player_sprite(player_texture);
     player_sprite.setRect(clips[player->getState()]);

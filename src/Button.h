@@ -11,12 +11,12 @@
 class Button
 {
     public:
-        Button(int x, int y, int width, int height);
+        Button(int x, int y, uint8_t width, uint8_t height);
         ~Button();
         int getX() const;
         int getY() const;
-        int getWidth() const;
-        int getHeight() const;
+        uint8_t getWidth() const;
+        uint8_t getHeight() const;
         void addText(std::string text, TTF_Font* font, SDL_Color textcolor, int offsetX = 0, int offsetY = 0);
         Label* getLabel();
         bool isFocus(int mx, int my);
@@ -24,7 +24,7 @@ class Button
 
     private:
         int x, y;
-        int width, height;
+        uint8_t width, height;
         Label* label;
 };
 #endif
