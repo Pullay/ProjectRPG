@@ -1,6 +1,6 @@
 #include "Enemy.h"
 
-Enemy::Enemy(const std::string name, int x, int y) : name(name), x(x), y(y)
+Enemy::Enemy(const std::string name, SDL_Point position) : name(name), position(position)
 {}
 
 std::string Enemy::getName() const
@@ -8,12 +8,7 @@ std::string Enemy::getName() const
     return name;
 }
 
-int Enemy::getX() const
+SDL_Point Enemy::getPosition() const
 {
-    return x;
-}
-
-int Enemy::getY() const
-{
-    return y;
+    return position;
 }

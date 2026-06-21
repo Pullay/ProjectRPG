@@ -8,27 +8,25 @@
 
 Game::Game()
 {
+    initialize();
     stateManager  = new StateManager();
     stateManager->changeState(new IntroState(stateManager));  
 }
 
 Game::~Game()
 {
+    shutdown();
     delete stateManager;
     stateManager = nullptr;
 }
 
-SDL_Renderer* Game::getRenderer() const
-{
-    return renderer;
-}
-
 void Game::run()
 {
-    if (!initialize()) {
-        std::cout << "Failed to initialize!" << "\n";
+    if (!stateManager->getState()) {
         return;
     }
+
+    std::cerr << "Game running \n"; // INFO
 
     // Main loop
     float frame_delay = 1000.0f / 60.0f;
@@ -45,25 +43,23 @@ void Game::run()
             delta_time += frame_delay - delta_time;
         }
     }
-
-    shutdown();
 }
 
 // PRIVATE
 bool Game::initialize()
 {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-        std::cout << SDL_GetError() <<"\n";
+        std::cerr << SDL_GetError() <<"\n";
         return false;
     }
 
     if (!IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG)) {
-        std::cout << IMG_GetError << "\n";
+        std::cerr << IMG_GetError << "\n";
         return false;
     }
 
     if (TTF_Init() == -1) {
-        std::cout << TTF_GetError << "\n";
+        std::cerr << TTF_GetError << "\n";
         return false;
     }
 
@@ -82,7 +78,6 @@ bool Game::initialize()
 
 void Game::processInput()
 {
-    SDL_Event event;
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
             running = false;
@@ -93,6 +88,10 @@ void Game::processInput()
 
 void Game::render()
 {
+    if (!stateManager->getState()) {
+        return;
+    }
+
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     stateManager->render(renderer);

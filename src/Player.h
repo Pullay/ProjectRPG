@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 
+#include <SDL_rect.h>
 #include <string>
 
 class Player
@@ -13,18 +14,16 @@ class Player
             IDLE = 0, WALK_UP, WALK_LEFT, WALK_DOWN,WALK_RIGHT, ATTACK, DEATH
         };
 
-        Player(const std::string name, int x, int y);
-        ~Player();
+        Player(const std::string name, SDL_Point position);
         std::string getName() const;
-        void move(int mx, int my);
-        int getX() const;
-        int getY() const;
+        void move(const int mx, const int my);
+        SDL_Point getPosition() const;
         void setState(State state);
-        Player::State getState();
+        Player::State getState() const;
 
     private:
         const std::string name;
-        int x, y;
+        SDL_Point position;
         State state;
 };
 #endif

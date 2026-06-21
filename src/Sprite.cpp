@@ -8,11 +8,17 @@ Sprite::Sprite(SDL_Texture* texture, SDL_Rect rect) : texture(texture), rect(rec
 
 void Sprite::setAlphaMod(Uint8 alpha)
 {
+    if (!texture)
+        return;
+
     SDL_SetTextureAlphaMod(texture, alpha);
 }
 
 void Sprite::setBlandMode(SDL_BlendMode blendMode)
 {
+    if (!texture)
+        return;
+
     SDL_SetTextureBlendMode(texture, blendMode);
 }
 

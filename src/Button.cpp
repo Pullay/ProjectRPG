@@ -1,7 +1,7 @@
 #include "Button.h"
 #include "utils.h"
 
-Button::Button(int x, int y, uint8_t width, uint8_t height)
+Button::Button(int x, int y, uint16_t width, uint16_t height)
   : x(x)
   , y(y)
   , width(width)
@@ -10,8 +10,10 @@ Button::Button(int x, int y, uint8_t width, uint8_t height)
 
 Button::~Button()
 {
-    delete label;
-    label = nullptr;
+    if (!label) {
+        delete label;
+        label = nullptr;
+    }
 }
 
 int Button::getX() const
@@ -24,12 +26,12 @@ int Button::getY() const
     return y;
 }
 
-uint8_t Button::getWidth() const
+uint16_t Button::getWidth() const
 {
     return width;
 }
 
-uint8_t Button::getHeight() const
+uint16_t Button::getHeight() const
 {
     return height;
 }
@@ -40,7 +42,7 @@ void Button::addText(std::string text, TTF_Font* font, SDL_Color textcolor, int 
     label->setColor(textcolor);
 }
 
-Label* Button::getLabel()
+Label* Button::getLabel() const
 {
     return label;
 }

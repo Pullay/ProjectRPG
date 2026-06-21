@@ -6,9 +6,8 @@ Label::Label(std::string text, TTF_Font* font, int x, int y)
   , font(font)
   , x(x)
   , y(y)
-{
-    textcolor = {255, 255, 255, 255};
-}
+  , textcolor({255, 255, 255, 255})
+{}
 
 int Label::getX() const
 {
@@ -20,12 +19,12 @@ int Label::getY() const
     return y;
 }
 
-std::string Label::getText()
+std::string Label::getText()  const
 {
     return text;
 }
 
-TTF_Font* Label::getFont()
+TTF_Font* Label::getFont() const
 {
     return font;
 }
@@ -35,7 +34,7 @@ void Label::setColor(SDL_Color color)
     textcolor = color;
 }
 
-SDL_Color Label::getColor()
+SDL_Color Label::getColor() const
 {
     return textcolor;
 }

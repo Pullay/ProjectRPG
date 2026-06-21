@@ -11,20 +11,20 @@
 class Button
 {
     public:
-        Button(int x, int y, uint8_t width, uint8_t height);
+        Button(int x, int y, uint16_t width, uint16_t height);
         ~Button();
         int getX() const;
         int getY() const;
-        uint8_t getWidth() const;
-        uint8_t getHeight() const;
+        uint16_t getWidth() const;
+        uint16_t getHeight() const;
         void addText(std::string text, TTF_Font* font, SDL_Color textcolor, int offsetX = 0, int offsetY = 0);
-        Label* getLabel();
+        Label* getLabel() const;
         bool isFocus(int mx, int my);
         void draw(SDL_Renderer* renderer);
 
     private:
         int x, y;
-        uint8_t width, height;
-        Label* label;
+        uint16_t width, height;
+        Label* label = nullptr;
 };
 #endif

@@ -2,21 +2,19 @@
 #include "Game.h"
 #include "Label.h"
 #include "MapLoader.h"
-#include "Sprite.h"
 #include "utils.h"
 
 #include <SDL_ttf.h>
 
 #include <map>
 #include <sstream>
-#include <vector>
 
 //TODO: This class has too many responsibilities.
 //      It will need to be divided into several smaller ones.
 MapState::MapState(StateManager* stateManager) : stateManager(stateManager)
 {
     map = MapLoader::load();
-    player = new Player("", Game::WINDOW_WIDTH / 2, Game::WINDOW_HEIGHT / 2);
+    player = new Player("", {Game::WINDOW_WIDTH / 2, Game::WINDOW_HEIGHT / 2});
     spawnEnemies();
 }
 
@@ -67,16 +65,16 @@ void MapState::movePlayerByInput(SDL_KeyboardEvent event)
         }
     }
 
-    if (player->getX() < 0) {
+    if (player->getPosition().x < 0) {
         player->move(1, 0);
     }
-    if (player->getX() > Game::WINDOW_WIDTH - 32) {
+    if (player->getPosition().x > Game::WINDOW_WIDTH - 32) {
         player->move(-1, 0);
     }
-    if (player->getY() < 0) {
+    if (player->getPosition().y < 0) {
         player->move(0, 1);
     }
-    if (player->getY() > Game::WINDOW_HEIGHT - 32) {
+    if (player->getPosition().y > Game::WINDOW_HEIGHT - 32) {
         player->move(0, -1);
     }
 }
@@ -84,7 +82,7 @@ void MapState::movePlayerByInput(SDL_KeyboardEvent event)
 void MapState::spawnEnemies()
 {
     // spaw test enemy
-    auto enemy = new Enemy("test", (Game::WINDOW_WIDTH / 2) - 10, (Game::WINDOW_HEIGHT / 2) - 10);
+    auto enemy = new Enemy("test", {(Game::WINDOW_WIDTH / 2) - 10, (Game::WINDOW_HEIGHT / 2) - 10});
     enemies.push_back(enemy);
 }
 
@@ -112,6 +110,7 @@ void MapState::renderMap(SDL_Renderer* renderer)
         }
     }
     SDL_DestroyTexture(map_texture);
+    map_texture = nullptr;
 }
 
 void MapState::renderPlayer(SDL_Renderer* renderer)
@@ -125,8 +124,9 @@ void MapState::renderPlayer(SDL_Renderer* renderer)
     SDL_Texture* player_texture = loadTexture(renderer, "assets/player.png");
     Sprite player_sprite(player_texture);
     player_sprite.setRect(clips[player->getState()]);
-    drawSprite(renderer, player_sprite, player->getX(), player->getY());
+    drawSprite(renderer, player_sprite, player->getPosition().x, player->getPosition().y);
     SDL_DestroyTexture(player_texture);
+    player_sprite = nullptr;
 }
 
 void MapState::renderEnemies(SDL_Renderer* renderer)
@@ -138,24 +138,26 @@ void MapState::renderEnemies(SDL_Renderer* renderer)
     // temp texture
     SDL_Texture* enemy_texture = loadTexture(renderer, "assets/player.png");
     Sprite enemy_sprite(enemy_texture, {24, 64, 24, 32});
-    TTF_Font* font = TTF_OpenFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 12);
+    TTF_Font* font = loadFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 16);
     for (auto enemy : enemies) {
-        Label label(enemy->getName(), font, enemy->getX(), enemy->getY() - 10);
+        Label label(enemy->getName(), font, enemy->getPosition().x, enemy->getPosition().y - 10);
         label.draw(renderer);
-
-        drawSprite(renderer, enemy_sprite, enemy->getX(), enemy->getY());
+        drawSprite(renderer, enemy_sprite, enemy->getPosition().x, enemy->getPosition().y);
     }
-    TTF_CloseFont(font);
     SDL_DestroyTexture(enemy_texture);
+    enemy_texture = nullptr;
+    TTF_CloseFont(font);
+    font = nullptr;
 }
 
 void MapState::renderTextBox(SDL_Renderer* renderer)
 {
     std::stringstream steam;
-    steam << "Player x" << player->getX() << ":y" << player->getY();
-    TTF_Font* font = TTF_OpenFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 16);
+    steam << "Player x" << player->getPosition().x << ":y" << player->getPosition().y;
+    TTF_Font* font = loadFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 16);
     Label label({steam.str()}, font, 5, Game::WINDOW_HEIGHT - 15);
     label.setColor({0, 0, 0, 255});
     label.draw(renderer);
     TTF_CloseFont(font);
+    font = nullptr;
 }

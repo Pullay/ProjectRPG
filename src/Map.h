@@ -7,7 +7,7 @@
 
 struct MapTile
 {
-    uint8_t id;
+    uint16_t id;
 };
 
 struct MapLayer
@@ -18,14 +18,14 @@ struct MapLayer
 class Map
 {
     public:
-        Map(uint8_t width, uint8_t height);
-        uint8_t getWidth() const;
-        uint8_t getHidth() const;
+        Map(uint16_t width, uint16_t height);
+        uint16_t getWidth() const;
+        uint16_t getHidth() const;
         void addLayer(MapLayer layer);
         std::vector<MapLayer> getLayers();
 
     private:
-        uint8_t width, height;
+        uint16_t width, height;
         std::vector<MapLayer> layers;
 };
 #endif

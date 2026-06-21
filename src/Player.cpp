@@ -1,11 +1,9 @@
 #include "Player.h"
 
-Player::Player(const std::string name, int x, int y) : name(name), x(x), y(y)
-{
-    state = State::IDLE;
-}
-
-Player::~Player()
+Player::Player(const std::string name, SDL_Point position)
+  : name(name)
+  , position(position)
+  , state(State::IDLE)
 {}
 
 std::string Player::getName() const
@@ -13,20 +11,15 @@ std::string Player::getName() const
     return name;
 }
 
-void Player::move(int mx, int my)
+void Player::move(const int mx, const int my)
 {
-    x += mx;
-    y += my;
+    position.x += mx;
+    position.y += my;
 }
 
-int Player::getX() const
+SDL_Point Player::getPosition() const
 {
-    return x;
-}
-
-int Player::getY() const
-{
-    return y;
+    return position;
 }
 
 void Player::setState(State _state)
@@ -34,7 +27,7 @@ void Player::setState(State _state)
     state = _state;
 }
 
-Player::State Player::getState()
+Player::State Player::getState() const
 {
     return state;
 }

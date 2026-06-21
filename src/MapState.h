@@ -7,6 +7,8 @@
 #include "State.h"
 #include "StateManager.h"
 
+#include <SDL.h>
+
 #include <vector>
 
 class MapState final : public State
@@ -21,6 +23,7 @@ class MapState final : public State
         StateManager* stateManager;
         Map* map;
         Player* player;
+        SDL_Point camera;
         std::vector<Enemy*> enemies;
 
         void movePlayerByInput(SDL_KeyboardEvent event);

@@ -12,10 +12,10 @@ class Label
         Label(std::string text, TTF_Font* font, int x, int y);
         int getX() const;
         int getY() const;
-        std::string getText();
-        TTF_Font* getFont();
+        std::string getText() const;
+        TTF_Font* getFont() const;
         void setColor(SDL_Color color);
-        SDL_Color getColor();
+        SDL_Color getColor() const;
         void draw(SDL_Renderer* renderer);
 
     private:

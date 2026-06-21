@@ -11,7 +11,7 @@ MainMenuState::MainMenuState(StateManager* stateManager) : stateManager(stateMan
     button = new Button(Game::WINDOW_WIDTH / 2, Game::WINDOW_HEIGHT / 2, 84, 42);
     button->addText("Start", font, {0, 255, 0, 255}, 10, 10);
     //TODO: memory leak
-    // //TTF_CloseFont(font); 
+    //TTF_CloseFont(font);
 }
 
 MainMenuState::~MainMenuState()
