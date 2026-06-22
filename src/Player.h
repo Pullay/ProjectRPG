@@ -1,12 +1,13 @@
 #ifndef PLAYER_H_
 #define PLAYER_H_
 
+#include "GameObject.h"
+
 #include <SDL.h>
 
-#include <SDL_rect.h>
 #include <string>
 
-class Player
+class Player : public GameObject
 {
     public:
         enum State : uint8_t
@@ -17,6 +18,7 @@ class Player
         Player(const std::string name, SDL_Point position);
         std::string getName() const;
         void move(const int mx, const int my);
+        void stop();
         SDL_Point getPosition() const;
         void setState(State state);
         Player::State getState() const;
@@ -25,5 +27,6 @@ class Player
         const std::string name;
         SDL_Point position;
         State state;
+        bool moving = false;
 };
 #endif

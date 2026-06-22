@@ -1,11 +1,13 @@
 #ifndef ENEMY_H_
 #define ENEMY_H_
 
+#include "GameObject.h"
+
 #include <SDL_rect.h>
 
 #include <string>
 
-class Enemy
+class Enemy : public GameObject
 {
     public:
         Enemy(std::string name, SDL_Point position);

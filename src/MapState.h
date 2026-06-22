@@ -2,6 +2,7 @@
 #define MAPSTATE_H_
 
 #include "Enemy.h"
+#include "GameObject.h"
 #include "Map.h"
 #include "Player.h"
 #include "State.h"
@@ -32,5 +33,7 @@ class MapState final : public State
         void renderPlayer(SDL_Renderer* renderer);
         void renderEnemies(SDL_Renderer* renderer);
         void renderTextBox(SDL_Renderer* renderer);
+        // TODO: For debug only
+        void displayHitBox(SDL_Renderer* renderer, GameObject* object);
 };
 #endif

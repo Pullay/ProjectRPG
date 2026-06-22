@@ -22,7 +22,7 @@ inline TTF_Font* loadFont(std::string path, uint8_t fontSize)
     TTF_Font* font = nullptr;
     font = TTF_OpenFont(path.c_str(), fontSize);
     if (!font) {
-        std::cerr << "Cannot load font " << path << "\n";
+        std::cerr << "Cannot load font from file " << path << "\n";
     }
     return font;
 }

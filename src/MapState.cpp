@@ -2,10 +2,14 @@
 #include "Game.h"
 #include "Label.h"
 #include "MapLoader.h"
+#include "Player.h"
 #include "utils.h"
 
+#include <SDL_events.h>
+#include <SDL_render.h>
 #include <SDL_ttf.h>
 
+#include <iostream>
 #include <map>
 #include <sstream>
 
@@ -44,38 +48,75 @@ void MapState::render(SDL_Renderer* renderer)
     renderTextBox(renderer);
 }
 
+// TODO: The movement system needs to be redesigned
 void MapState::movePlayerByInput(SDL_KeyboardEvent event)
 {
-    if (event.repeat == 0) {
-        if (event.keysym.scancode == SDL_SCANCODE_A) {
-            player->move(-1, 0);
-            player->setState(Player::WALK_RIGHT);
-        }
-        if (event.keysym.scancode == SDL_SCANCODE_D) {
-            player->move(1, 0);
-            player->setState(Player::WALK_LEFT);
-        }
-        if (event.keysym.scancode == SDL_SCANCODE_W) {
-            player->move(0, -1);
-            player->setState(Player::WALK_UP);
-        }
-        if (event.keysym.scancode == SDL_SCANCODE_S) {
-            player->setState(Player::WALK_DOWN);
-            player->move(0, 1);
+    if (stateManager->getEvent().type == SDL_KEYDOWN && event.repeat == 0) {
+        switch (event.keysym.sym) {
+            case SDLK_w:
+                player->move(0, 1);
+                player->setState(Player::WALK_UP);
+                break;
+            case SDLK_s:
+                player->setState(Player::WALK_DOWN);
+                player->move(0, -1);
+                break;
+            case SDLK_d:
+                player->move(-1, 0);
+                player->setState(Player::WALK_LEFT);
+                break;
+            case SDLK_a:
+                player->move(1, 0);
+                player->setState(Player::WALK_RIGHT);
+                break;
+        } 
+    } else if (stateManager->getEvent().type == SDL_KEYUP && event.repeat == 0) {
+        switch (event.keysym.sym) {
+            case SDLK_w:
+                player->move(0, -1);
+                player->setState(Player::WALK_UP);
+                break;
+            case SDLK_s:
+                player->setState(Player::WALK_DOWN);
+                player->move(0, 1);
+                break;
+            case SDLK_d:
+                player->move(1, 0);
+                player->setState(Player::WALK_LEFT);
+                break;
+            case SDLK_a:
+                player->move(-1, 0);
+                player->setState(Player::WALK_RIGHT);
+                break;
         }
     }
-
-    if (player->getPosition().x < 0) {
-        player->move(1, 0);
-    }
-    if (player->getPosition().x > Game::WINDOW_WIDTH - 32) {
+    
+    if (player->getPosition().x > (Game::WINDOW_WIDTH - player->getCollider().w)) {
         player->move(-1, 0);
     }
-    if (player->getPosition().y < 0) {
-        player->move(0, 1);
-    }
-    if (player->getPosition().y > Game::WINDOW_HEIGHT - 32) {
+    if (player->getPosition().y > (Game::WINDOW_HEIGHT - player->getCollider().h)) {
         player->move(0, -1);
+    }
+
+    for (auto enemy : enemies) {
+        if (player->checkCollision(enemy)) {
+            switch (player->getState()) {
+                case Player::WALK_UP:
+                    player->move(0, 1);
+                    break;
+                case Player::WALK_DOWN:
+                    player->move(0, -1);
+                    break;
+                case Player::WALK_LEFT:
+                    player->move(-1, 0);
+                    break;
+                case Player::WALK_RIGHT:
+                    player->move(1, 0);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
 
@@ -115,6 +156,9 @@ void MapState::renderMap(SDL_Renderer* renderer)
 
 void MapState::renderPlayer(SDL_Renderer* renderer)
 {
+    // Hitbox display
+    displayHitBox(renderer, player);
+
     std::map<Player::State, SDL_Rect> clips;
     clips[Player::IDLE] = {24, 64, 24, 32};
     clips[Player::WALK_UP] = {24, 0, 24, 32};
@@ -135,13 +179,16 @@ void MapState::renderEnemies(SDL_Renderer* renderer)
         return;
     }
 
-    // temp texture
+    // TODO: temp texture
     SDL_Texture* enemy_texture = loadTexture(renderer, "assets/player.png");
     Sprite enemy_sprite(enemy_texture, {24, 64, 24, 32});
     TTF_Font* font = loadFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 16);
     for (auto enemy : enemies) {
-        Label label(enemy->getName(), font, enemy->getPosition().x, enemy->getPosition().y - 10);
+        
+        Label label(enemy->getName(), font, enemy->getPosition().x, enemy->getPosition().y - 16);
         label.draw(renderer);
+        // Hitbox display
+        displayHitBox(renderer, enemy);
         drawSprite(renderer, enemy_sprite, enemy->getPosition().x, enemy->getPosition().y);
     }
     SDL_DestroyTexture(enemy_texture);
@@ -160,4 +207,14 @@ void MapState::renderTextBox(SDL_Renderer* renderer)
     label.draw(renderer);
     TTF_CloseFont(font);
     font = nullptr;
+}
+
+void MapState::displayHitBox(SDL_Renderer* renderer, GameObject* object)
+{
+    if (!object) {
+        return;
+    }
+
+    SDL_Rect hitbox = object->getCollider();
+    SDL_RenderDrawRect(renderer, &hitbox);
 }
