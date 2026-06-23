@@ -9,6 +9,7 @@
 #include "StateManager.h"
 
 #include <SDL.h>
+#include <SDL_ttf.h>
 
 #include <vector>
 
@@ -22,6 +23,8 @@ class MapState final : public State
 
     private:
         StateManager* stateManager;
+        TTF_Font* font;
+        SDL_Renderer* renderer;
         Map* map;
         Player* player;
         SDL_Point camera;
@@ -29,11 +32,12 @@ class MapState final : public State
 
         void movePlayerByInput(SDL_KeyboardEvent event);
         void spawnEnemies();
-        void renderMap(SDL_Renderer* renderer);
-        void renderPlayer(SDL_Renderer* renderer);
-        void renderEnemies(SDL_Renderer* renderer);
-        void renderTextBox(SDL_Renderer* renderer);
+        void renderMap();
+        void renderPlayer();
+        void renderEnemies();
         // TODO: For debug only
-        void displayHitBox(SDL_Renderer* renderer, GameObject* object);
+        void drawLabel(std::string text, int x, int y);
+        void _displayDebugInfo();
+        void _displayHitBox(GameObject* object);
 };
 #endif

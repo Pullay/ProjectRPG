@@ -5,6 +5,8 @@
 #include "State.h"
 #include "StateManager.h"
 
+#include <SDL_ttf.h>
+
 class MainMenuState final : public State
 {
     public:
@@ -15,6 +17,7 @@ class MainMenuState final : public State
 
     private:
         StateManager* stateManager;
+        TTF_Font* font;
         Button* button;
 };
 #endif

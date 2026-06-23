@@ -2,21 +2,17 @@
 #include "Game.h"
 #include "Label.h"
 #include "MapLoader.h"
-#include "Player.h"
 #include "utils.h"
 
-#include <SDL_events.h>
-#include <SDL_render.h>
-#include <SDL_ttf.h>
-
-#include <iostream>
 #include <map>
 #include <sstream>
+#include <string>
 
 //TODO: This class has too many responsibilities.
 //      It will need to be divided into several smaller ones.
 MapState::MapState(StateManager* stateManager) : stateManager(stateManager)
 {
+    font = loadFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 16);
     map = MapLoader::load();
     player = new Player("", {Game::WINDOW_WIDTH / 2, Game::WINDOW_HEIGHT / 2});
     spawnEnemies();
@@ -32,6 +28,10 @@ MapState::~MapState()
         delete it;
     }
     enemies.clear();
+    if (font != nullptr) {
+        TTF_CloseFont(font);
+        font = nullptr;
+    }
 }
 
 void MapState::update(const float& deltaTime)
@@ -42,11 +42,14 @@ void MapState::update(const float& deltaTime)
 
 void MapState::render(SDL_Renderer* renderer)
 {
-    renderMap(renderer);
-    renderPlayer(renderer);
-    renderEnemies(renderer);
-    renderTextBox(renderer);
+    this->renderer = renderer;
+    renderMap();
+    renderPlayer();
+    renderEnemies();
+    _displayDebugInfo();
 }
+
+// PRIVATE
 
 // TODO: The movement system needs to be redesigned
 void MapState::movePlayerByInput(SDL_KeyboardEvent event)
@@ -123,22 +126,28 @@ void MapState::movePlayerByInput(SDL_KeyboardEvent event)
 void MapState::spawnEnemies()
 {
     // spaw test enemy
-    auto enemy = new Enemy("test", {(Game::WINDOW_WIDTH / 2) - 10, (Game::WINDOW_HEIGHT / 2) - 10});
+    auto enemy = new Enemy("test", {(Game::WINDOW_WIDTH / 2) - 50, (Game::WINDOW_HEIGHT / 2) - 50});
     enemies.push_back(enemy);
 }
 
-void MapState::renderMap(SDL_Renderer* renderer)
+void MapState::renderMap()
 {
+    int8_t tile_size = 32;
     std::vector<SDL_Rect> tileset;
-    tileset.push_back({0, 0, 32, 32});
-    tileset.push_back({32, 32, 32, 32});
+    tileset.push_back({0, 0, tile_size, tile_size});
+    tileset.push_back({32, 32, tile_size, tile_size});
     SDL_Texture* map_texture = loadTexture(renderer, "assets/map_tiles.png");
-    Sprite map_tileset(map_texture);
     int x = 0, y = 0;
     for (auto layer : map->getLayers()) {
         for (auto tile : layer.tiles) {
-            map_tileset.setRect(tileset[tile.id]);
-            drawSprite(renderer, map_tileset, x * 32, y * 32);
+            // Don't draw tiles outside the window
+            if ((x * tile_size) > Game::WINDOW_WIDTH && (y * tile_size) > Game::WINDOW_HEIGHT) {
+                continue;
+            }
+
+            SDL_Rect src = tileset[tile.id];
+            SDL_Rect dst{x * tile_size, y* tile_size, src.w, src.h};
+            SDL_RenderCopy(renderer, map_texture, &src, &dst);
 
             x++;
             if (x >= map->getWidth()) {
@@ -150,14 +159,14 @@ void MapState::renderMap(SDL_Renderer* renderer)
             }
         }
     }
+
     SDL_DestroyTexture(map_texture);
     map_texture = nullptr;
 }
 
-void MapState::renderPlayer(SDL_Renderer* renderer)
+void MapState::renderPlayer()
 {
-    // Hitbox display
-    displayHitBox(renderer, player);
+    _displayHitBox(player);
 
     std::map<Player::State, SDL_Rect> clips;
     clips[Player::IDLE] = {24, 64, 24, 32};
@@ -173,7 +182,7 @@ void MapState::renderPlayer(SDL_Renderer* renderer)
     player_sprite = nullptr;
 }
 
-void MapState::renderEnemies(SDL_Renderer* renderer)
+void MapState::renderEnemies()
 {
     if (enemies.empty()) {
         return;
@@ -182,34 +191,32 @@ void MapState::renderEnemies(SDL_Renderer* renderer)
     // TODO: temp texture
     SDL_Texture* enemy_texture = loadTexture(renderer, "assets/player.png");
     Sprite enemy_sprite(enemy_texture, {24, 64, 24, 32});
-    TTF_Font* font = loadFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 16);
     for (auto enemy : enemies) {
-        
         Label label(enemy->getName(), font, enemy->getPosition().x, enemy->getPosition().y - 16);
         label.draw(renderer);
-        // Hitbox display
-        displayHitBox(renderer, enemy);
+        _displayHitBox(enemy);
         drawSprite(renderer, enemy_sprite, enemy->getPosition().x, enemy->getPosition().y);
     }
+
     SDL_DestroyTexture(enemy_texture);
     enemy_texture = nullptr;
-    TTF_CloseFont(font);
-    font = nullptr;
 }
 
-void MapState::renderTextBox(SDL_Renderer* renderer)
+void MapState::drawLabel(std::string text, int x, int y)
 {
-    std::stringstream steam;
-    steam << "Player x" << player->getPosition().x << ":y" << player->getPosition().y;
-    TTF_Font* font = loadFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 16);
-    Label label({steam.str()}, font, 5, Game::WINDOW_HEIGHT - 15);
+    Label label(text, font, x, y);
     label.setColor({0, 0, 0, 255});
     label.draw(renderer);
-    TTF_CloseFont(font);
-    font = nullptr;
 }
 
-void MapState::displayHitBox(SDL_Renderer* renderer, GameObject* object)
+void MapState::_displayDebugInfo()
+{
+    std::stringstream ss_player_position;
+    ss_player_position<< "Player x" << player->getPosition().x << ":y" << player->getPosition().y;
+    drawLabel(ss_player_position.str(), 5, Game::WINDOW_HEIGHT - 15);
+}
+
+void MapState::_displayHitBox(GameObject* object)
 {
     if (!object) {
         return;
