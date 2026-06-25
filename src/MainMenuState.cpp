@@ -8,12 +8,15 @@
 MainMenuState::MainMenuState(StateManager* stateManager) : stateManager(stateManager)
 {
     font = loadFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 24);
+    background = Image::load("assets/gui/main_menu.png");
     button = new Button(Game::WINDOW_WIDTH / 2, Game::WINDOW_HEIGHT / 2, 84, 42);
     button->addText("Start", font, {0, 255, 0, 255}, 10, 10);
 }
 
 MainMenuState::~MainMenuState()
 {
+    delete background;
+    background = nullptr;
     delete button;
     button = nullptr;
     if (font != nullptr) {
@@ -39,10 +42,6 @@ void MainMenuState::update(const float& deltaTime)
 
 void MainMenuState::render(SDL_Renderer* renderer)
 {
-    SDL_Texture* background_texture = loadTexture(renderer, "assets/gui/main_menu.png");
-    SDL_QueryTexture(background_texture, NULL, NULL, 0, 0);
-    SDL_RenderCopy(renderer, background_texture, NULL, NULL);
-
+    background->draw(renderer, 0, 0);
     button->draw(renderer);
-    SDL_DestroyTexture(background_texture);
 }

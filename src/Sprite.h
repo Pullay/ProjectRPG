@@ -1,23 +1,23 @@
 #ifndef SPRIITE_H_
 #define SPRIITE_H_
 
+#include "Image.h"
+
 #include <SDL.h>
 
-// SFML like
-class Sprite
+#include <string>
+
+class Sprite : public Image
 {
     public:
-        Sprite(SDL_Texture* texture);
-        Sprite(SDL_Texture* texture, SDL_Rect rect);
-        void setAlphaMod(Uint8 alpha);
-        void setBlandMode(SDL_BlendMode blendMode);
-        void setTexture(SDL_Texture* texture);
-        SDL_Texture* getTexture() const;
-        void setRect(SDL_Rect rect);
-        SDL_Rect getRect() const;
+        Sprite();
+        static Sprite* load(std::string path);
+        void setClip(SDL_Rect rect);
+        SDL_Rect getClip() const;
+        void draw(SDL_Renderer* renderer, int x, int y);
+        void draw(SDL_Renderer* renderer, SDL_Point position);
 
     private:
-        SDL_Texture* texture = nullptr; 
-        SDL_Rect rect;
+        SDL_Rect clip;
 };
 #endif

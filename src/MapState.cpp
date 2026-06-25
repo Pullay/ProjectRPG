@@ -6,7 +6,6 @@
 
 #include <map>
 #include <sstream>
-#include <string>
 
 //TODO: This class has too many responsibilities.
 //      It will need to be divided into several smaller ones.
@@ -14,6 +13,9 @@ MapState::MapState(StateManager* stateManager) : stateManager(stateManager)
 {
     font = loadFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 16);
     map = MapLoader::load();
+    playerSprite = Sprite::load("assets/player.png");
+    // TODO: temp texture
+    enemySprite = Sprite::load("assets/player.png");
     player = new Player("", {Game::WINDOW_WIDTH / 2, Game::WINDOW_HEIGHT / 2});
     spawnEnemies();
 }
@@ -24,6 +26,10 @@ MapState::~MapState()
     map = nullptr;
     delete player;
     player = nullptr;
+    delete playerSprite;
+    playerSprite = nullptr;
+    delete enemySprite;
+    enemySprite = nullptr;
     for (auto it : enemies) {
         delete it;
     }
@@ -136,6 +142,7 @@ void MapState::renderMap()
     std::vector<SDL_Rect> tileset;
     tileset.push_back({0, 0, tile_size, tile_size});
     tileset.push_back({32, 32, tile_size, tile_size});
+
     SDL_Texture* map_texture = loadTexture(renderer, "assets/map_tiles.png");
     int x = 0, y = 0;
     for (auto layer : map->getLayers()) {
@@ -174,12 +181,8 @@ void MapState::renderPlayer()
     clips[Player::WALK_LEFT] = {24, 32, 24, 32};
     clips[Player::WALK_DOWN] = {24, 64, 24, 32};
     clips[Player::WALK_RIGHT] = {24, 96, 24, 32};
-    SDL_Texture* player_texture = loadTexture(renderer, "assets/player.png");
-    Sprite player_sprite(player_texture);
-    player_sprite.setRect(clips[player->getState()]);
-    drawSprite(renderer, player_sprite, player->getPosition().x, player->getPosition().y);
-    SDL_DestroyTexture(player_texture);
-    player_sprite = nullptr;
+    playerSprite->setClip(clips[player->getState()]);
+    playerSprite->draw(renderer, player->getPosition());
 }
 
 void MapState::renderEnemies()
@@ -188,18 +191,13 @@ void MapState::renderEnemies()
         return;
     }
 
-    // TODO: temp texture
-    SDL_Texture* enemy_texture = loadTexture(renderer, "assets/player.png");
-    Sprite enemy_sprite(enemy_texture, {24, 64, 24, 32});
+    enemySprite->setClip({24, 64, 24, 32});
     for (auto enemy : enemies) {
         Label label(enemy->getName(), font, enemy->getPosition().x, enemy->getPosition().y - 16);
         label.draw(renderer);
         _displayHitBox(enemy);
-        drawSprite(renderer, enemy_sprite, enemy->getPosition().x, enemy->getPosition().y);
+        enemySprite->draw(renderer, enemy->getPosition());
     }
-
-    SDL_DestroyTexture(enemy_texture);
-    enemy_texture = nullptr;
 }
 
 void MapState::drawLabel(std::string text, int x, int y)

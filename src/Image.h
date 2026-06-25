@@ -3,16 +3,24 @@
 
 #include <SDL.h>
 
+#include <string>
+
 class Image
 {
     public:
-        Image(SDL_Texture* texture, int x, int y, uint8_t w, uint8_t h);
-        SDL_Texture* getTexture() const;
-        SDL_Rect getRect() const;
+        Image();
+        ~Image();
+        static Image* load(std::string path);
+        void setSurface(SDL_Surface* surface);
+        SDL_Surface* getSurface();
+        int getWidth() const;
+        int getHeight() const;
+        void draw(SDL_Renderer* renderer, int x, int y);
+        void free();
 
-    private:
-        SDL_Texture* texture = nullptr;
-        int x, y;
-        uint8_t h, w;
+    protected:
+        SDL_Surface* surface;
+
+        void blit();
 };
 #endif

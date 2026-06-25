@@ -5,6 +5,7 @@
 #include "GameObject.h"
 #include "Map.h"
 #include "Player.h"
+#include "Sprite.h"
 #include "State.h"
 #include "StateManager.h"
 
@@ -27,6 +28,8 @@ class MapState final : public State
         SDL_Renderer* renderer;
         Map* map;
         Player* player;
+        Sprite* playerSprite;
+        Sprite* enemySprite;
         SDL_Point camera;
         std::vector<Enemy*> enemies;
 

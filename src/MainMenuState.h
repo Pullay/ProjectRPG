@@ -2,6 +2,7 @@
 #define MAINMENUSTATE_H_
 
 #include "Button.h"
+#include "Image.h"
 #include "State.h"
 #include "StateManager.h"
 
@@ -18,6 +19,7 @@ class MainMenuState final : public State
     private:
         StateManager* stateManager;
         TTF_Font* font;
+        Image* background;
         Button* button;
 };
 #endif
