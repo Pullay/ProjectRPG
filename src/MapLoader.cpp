@@ -24,14 +24,17 @@ Map* MapLoader::load()
         1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
     };
     std::vector<MapTile> tiles;
+
     for (auto tile_id : map_data) {
         MapTile tile;
         tile.id = tile_id;
         tiles.push_back(tile);
+
     }
+
     MapLayer layer;
     layer.tiles = tiles;
-    auto map = new Map(20, 15);
+    auto map = new Map(20, 15, 32);
     map->addLayer(layer);
     return map;
 }

@@ -7,10 +7,7 @@
 
 MainMenuState::MainMenuState(StateManager* stateManager) : stateManager(stateManager)
 {
-    font = loadFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 24);
-    background = Image::load("assets/gui/main_menu.png");
-    button = new Button(Game::WINDOW_WIDTH / 2, Game::WINDOW_HEIGHT / 2, 84, 42);
-    button->addText("Start", font, {0, 255, 0, 255}, 10, 10);
+   initialize();
 }
 
 MainMenuState::~MainMenuState()
@@ -23,6 +20,15 @@ MainMenuState::~MainMenuState()
         TTF_CloseFont(font);
         font = nullptr;
     }
+}
+
+bool MainMenuState::initialize()
+{
+    font = loadFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 24);
+    background = Image::load("assets/gui/main_menu.png");
+    button = new Button(Game::WINDOW_WIDTH / 2, Game::WINDOW_HEIGHT / 2, 84, 42);
+    button->addText("Start", font, {0, 255, 0, 255}, 10, 10);
+    return true;
 }
 
 void MainMenuState::update(const float& deltaTime)

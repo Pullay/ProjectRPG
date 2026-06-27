@@ -19,28 +19,19 @@ class MapState final : public State
     public:
         MapState(StateManager* stateManager);
         ~MapState();
+        bool initialize();
         void update(const float& deltaTime) override;
         void render(SDL_Renderer* renderer) override;
 
     private:
         StateManager* stateManager;
-        TTF_Font* font;
-        SDL_Renderer* renderer;
+        TTF_Font *font;
         Map* map;
         Player* player;
-        Sprite* playerSprite;
-        Sprite* enemySprite;
-        SDL_Point camera;
+        Sprite* _playerSprite; // only for delete
         std::vector<Enemy*> enemies;
 
-        void movePlayerByInput(SDL_KeyboardEvent event);
-        void spawnEnemies();
-        void renderMap();
-        void renderPlayer();
-        void renderEnemies();
-        // TODO: For debug only
-        void drawLabel(std::string text, int x, int y);
-        void _displayDebugInfo();
-        void _displayHitBox(GameObject* object);
+        void _displayCollisionBox(SDL_Renderer* renderer, GameObject* object);
+        void _displayDebugInfo(SDL_Renderer* renderer);
 };
 #endif

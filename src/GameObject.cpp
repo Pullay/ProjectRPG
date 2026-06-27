@@ -7,26 +7,22 @@ SDL_Rect GameObject::getCollider()
 
 // AABB Collision Detection
 // @source https://lazyfoo.net/tutorials/SDL/27_collision_detection/index.php
-bool GameObject::checkCollision(GameObject* object)
+bool GameObject::checkCollision(SDL_Rect a, SDL_Rect b)
 {
-    if (!object) {
-        return true;
-    }
-
     int leftA, leftB;
     int rightA, rightB;
     int topA, topB;
     int bottomA, bottomB;
 
-    leftA = collider.x;
-    rightA = collider.x + collider.w;
-    topA = collider.y;
-    bottomA = collider.y + collider.h;
+    leftA = a.x;
+    rightA = a.x + a.w;
+    topA = a.y;
+    bottomA = a.y + a.h;
 
-    leftB = object->getCollider().x;
-    rightB = object->getCollider().x + object->getCollider().w;
-    topB = object->getCollider().y;
-    bottomB = object->getCollider().y + object->getCollider().h;
+    leftB = b.x;
+    rightB = b.x + b.w;
+    topB = b.y;
+    bottomB =b.y + b.h;
 
     if(bottomA <= topB) {
         return false;
@@ -45,4 +41,13 @@ bool GameObject::checkCollision(GameObject* object)
     }
 
     return true;
+}
+
+bool GameObject::checkCollision(GameObject* object)
+{
+    if (!object) {
+        return true;
+    }
+
+    return checkCollision(collider, object->getCollider());
 }

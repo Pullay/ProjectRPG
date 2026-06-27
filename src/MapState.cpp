@@ -1,220 +1,137 @@
-#include "MapState.h"
 #include "Game.h"
-#include "Label.h"
+#include "MapState.h"
 #include "MapLoader.h"
+#include "Player.h"
 #include "utils.h"
 
-#include <map>
 #include <sstream>
 
-//TODO: This class has too many responsibilities.
-//      It will need to be divided into several smaller ones.
 MapState::MapState(StateManager* stateManager) : stateManager(stateManager)
 {
-    font = loadFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 16);
-    map = MapLoader::load();
-    playerSprite = Sprite::load("assets/player.png");
-    // TODO: temp texture
-    enemySprite = Sprite::load("assets/player.png");
-    player = new Player("", {Game::WINDOW_WIDTH / 2, Game::WINDOW_HEIGHT / 2});
-    spawnEnemies();
+    initialize();
 }
 
 MapState::~MapState()
 {
-    delete map;
-    map = nullptr;
-    delete player;
-    player = nullptr;
-    delete playerSprite;
-    playerSprite = nullptr;
-    delete enemySprite;
-    enemySprite = nullptr;
-    for (auto it : enemies) {
-        delete it;
-    }
-    enemies.clear();
     if (font != nullptr) {
         TTF_CloseFont(font);
         font = nullptr;
     }
+
+    delete map;
+    map = nullptr;
+    delete _playerSprite;
+    _playerSprite = nullptr;
+    delete player;
+    player = nullptr;
+
+    for (auto it: enemies) {
+        delete it;
+    }
+    
 }
+
+bool MapState::initialize()
+{
+    font = loadFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 16);
+    map = MapLoader::load();
+    // Init Player
+    _playerSprite = Sprite::load("assets/player.png");
+    _playerSprite->setClip({24, 32, 24, 32}); // default clip
+    player = new Player("Me", _playerSprite);
+    player->addClip(Player::WALK_UP, {24, 0, 24, 32});
+    player->addClip(Player::WALK_LEFT, {24, 32, 24, 32});
+    player->addClip(Player::WALK_DOWN, {24, 64, 24, 32});
+    player->addClip(Player::WALK_RIGHT, {24, 96, 24, 32});
+    player->setPosition(Game::WINDOW_WIDTH / 2, Game::WINDOW_HEIGHT / 2);
+    // Init Enemies
+    // TODO: temp sprite
+    auto enemy = new Enemy("test", _playerSprite);
+    enemy->setPosition(player->getPosition().x + 50, player->getPosition().y + 50);
+    enemies.push_back(enemy);
+    return true;
+};
 
 void MapState::update(const float& deltaTime)
 {
     SDL_Event event = stateManager->getEvent();
-    movePlayerByInput(event.key);
-}
-
-void MapState::render(SDL_Renderer* renderer)
-{
-    this->renderer = renderer;
-    renderMap();
-    renderPlayer();
-    renderEnemies();
-    _displayDebugInfo();
-}
-
-// PRIVATE
-
-// TODO: The movement system needs to be redesigned
-void MapState::movePlayerByInput(SDL_KeyboardEvent event)
-{
-    if (stateManager->getEvent().type == SDL_KEYDOWN && event.repeat == 0) {
-        switch (event.keysym.sym) {
+    // movement player
+    if (event.type == SDL_KEYUP && event.key.repeat == 0) {
+        switch (event.key.keysym.sym) {
             case SDLK_w:
-                player->move(0, 1);
-                player->setState(Player::WALK_UP);
+                player->move(Player::MoveDirection::UP);
                 break;
             case SDLK_s:
-                player->setState(Player::WALK_DOWN);
-                player->move(0, -1);
-                break;
-            case SDLK_d:
-                player->move(-1, 0);
-                player->setState(Player::WALK_LEFT);
+                player->move(Player::MoveDirection::DOWN);
                 break;
             case SDLK_a:
-                player->move(1, 0);
-                player->setState(Player::WALK_RIGHT);
-                break;
-        } 
-    } else if (stateManager->getEvent().type == SDL_KEYUP && event.repeat == 0) {
-        switch (event.keysym.sym) {
-            case SDLK_w:
-                player->move(0, -1);
-                player->setState(Player::WALK_UP);
-                break;
-            case SDLK_s:
-                player->setState(Player::WALK_DOWN);
-                player->move(0, 1);
+                player->move(Player::MoveDirection::LEFT);
                 break;
             case SDLK_d:
-                player->move(1, 0);
-                player->setState(Player::WALK_LEFT);
-                break;
-            case SDLK_a:
-                player->move(-1, 0);
-                player->setState(Player::WALK_RIGHT);
+                player->move(Player::MoveDirection::RIGHT);
                 break;
         }
     }
-    
-    if (player->getPosition().x > (Game::WINDOW_WIDTH - player->getCollider().w)) {
-        player->move(-1, 0);
-    }
-    if (player->getPosition().y > (Game::WINDOW_HEIGHT - player->getCollider().h)) {
-        player->move(0, -1);
-    }
 
+    player->update(deltaTime);
+
+    // update enemies
     for (auto enemy : enemies) {
+        // check collsion
         if (player->checkCollision(enemy)) {
-            switch (player->getState()) {
+             switch (player->getState()) {
                 case Player::WALK_UP:
-                    player->move(0, 1);
+                    player->move(Player::MoveDirection::DOWN);
                     break;
                 case Player::WALK_DOWN:
-                    player->move(0, -1);
+                    player->move(Player::MoveDirection::UP);
                     break;
                 case Player::WALK_LEFT:
-                    player->move(-1, 0);
+                    player->move(Player::MoveDirection::RIGHT);
                     break;
                 case Player::WALK_RIGHT:
-                    player->move(1, 0);
+                    player->move(Player::MoveDirection::LEFT);
                     break;
                 default:
                     break;
             }
         }
-    }
-}
 
-void MapState::spawnEnemies()
-{
-    // spaw test enemy
-    auto enemy = new Enemy("test", {(Game::WINDOW_WIDTH / 2) - 50, (Game::WINDOW_HEIGHT / 2) - 50});
-    enemies.push_back(enemy);
-}
-
-void MapState::renderMap()
-{
-    int8_t tile_size = 32;
-    std::vector<SDL_Rect> tileset;
-    tileset.push_back({0, 0, tile_size, tile_size});
-    tileset.push_back({32, 32, tile_size, tile_size});
-
-    SDL_Texture* map_texture = loadTexture(renderer, "assets/map_tiles.png");
-    int x = 0, y = 0;
-    for (auto layer : map->getLayers()) {
-        for (auto tile : layer.tiles) {
-            // Don't draw tiles outside the window
-            if ((x * tile_size) > Game::WINDOW_WIDTH && (y * tile_size) > Game::WINDOW_HEIGHT) {
-                continue;
-            }
-
-            SDL_Rect src = tileset[tile.id];
-            SDL_Rect dst{x * tile_size, y* tile_size, src.w, src.h};
-            SDL_RenderCopy(renderer, map_texture, &src, &dst);
-
-            x++;
-            if (x >= map->getWidth()) {
-                x = 0;
-                y++;
-
-                if (y >= map->getHidth())
-                    y = 0;
-            }
-        }
+        enemy->update(deltaTime);
     }
 
-    SDL_DestroyTexture(map_texture);
-    map_texture = nullptr;
-}
-
-void MapState::renderPlayer()
-{
-    _displayHitBox(player);
-
-    std::map<Player::State, SDL_Rect> clips;
-    clips[Player::IDLE] = {24, 64, 24, 32};
-    clips[Player::WALK_UP] = {24, 0, 24, 32};
-    clips[Player::WALK_LEFT] = {24, 32, 24, 32};
-    clips[Player::WALK_DOWN] = {24, 64, 24, 32};
-    clips[Player::WALK_RIGHT] = {24, 96, 24, 32};
-    playerSprite->setClip(clips[player->getState()]);
-    playerSprite->draw(renderer, player->getPosition());
-}
-
-void MapState::renderEnemies()
-{
-    if (enemies.empty()) {
-        return;
+    if (player->getPosition().x < 0) {
+        player->move(Player::MoveDirection::RIGHT);
+    }
+    if (player->getPosition().x >= (map->getWidth() * map->getTileSize()) - 32) {
+        player->move(Player::MoveDirection::LEFT);
+    }
+    if (player->getPosition().y < 0) {
+        player->move(Player::MoveDirection::DOWN);
+    }
+    if (player->getPosition().y >= (map->getHidth() * map->getTileSize()) -32) {
+       player->move(Player::MoveDirection::UP);
     }
 
-    enemySprite->setClip({24, 64, 24, 32});
+    map->update(deltaTime);
+}
+
+void MapState::render(SDL_Renderer* renderer)
+{
+    map->render(renderer);
+    player->render(renderer);
+    _displayCollisionBox(renderer, player);
+
     for (auto enemy : enemies) {
-        Label label(enemy->getName(), font, enemy->getPosition().x, enemy->getPosition().y - 16);
-        label.draw(renderer);
-        _displayHitBox(enemy);
-        enemySprite->draw(renderer, enemy->getPosition());
+        drawText(renderer, enemy->getName(), font, {0, 0, 0, 255}, enemy->getPosition().x, enemy->getPosition().y - 14);
+        _displayCollisionBox(renderer, enemy);
+        enemy->render(renderer);
     }
+    _displayDebugInfo(renderer);
 }
 
-void MapState::drawLabel(std::string text, int x, int y)
-{
-    Label label(text, font, x, y);
-    label.setColor({0, 0, 0, 255});
-    label.draw(renderer);
-}
-
-void MapState::_displayDebugInfo()
-{
-    std::stringstream ss_player_position;
-    ss_player_position<< "Player x" << player->getPosition().x << ":y" << player->getPosition().y;
-    drawLabel(ss_player_position.str(), 5, Game::WINDOW_HEIGHT - 15);
-}
-
-void MapState::_displayHitBox(GameObject* object)
+// PRIVATE
+void MapState::_displayCollisionBox(SDL_Renderer* renderer, GameObject* object)
 {
     if (!object) {
         return;
@@ -222,4 +139,11 @@ void MapState::_displayHitBox(GameObject* object)
 
     SDL_Rect hitbox = object->getCollider();
     SDL_RenderDrawRect(renderer, &hitbox);
+}
+
+void MapState::_displayDebugInfo(SDL_Renderer* renderer)
+{
+    std::stringstream ss_player_position;
+    ss_player_position<< "Player x" << player->getPosition().x << ":y" << player->getPosition().y;
+    drawText(renderer, ss_player_position.str(), font, {0, 0, 0, 255}, 5, Game::WINDOW_HEIGHT - 15);
 }
