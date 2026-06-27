@@ -33,6 +33,10 @@ bool MainMenuState::initialize()
 
 void MainMenuState::update(const float& deltaTime)
 {
+    if (!button) {
+        std::cerr << __func__ << ": Access to the null pointer is not possible \n";
+    }
+
     SDL_Event e = stateManager->getEvent();
     if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP) {
         int mx, my;
@@ -48,6 +52,11 @@ void MainMenuState::update(const float& deltaTime)
 
 void MainMenuState::render(SDL_Renderer* renderer)
 {
+    if (!background || !button) {
+        std::cerr << __func__ << ": Access to the null pointer is not possible\n";
+        return;
+    }
+
     background->draw(renderer, 0, 0);
     button->draw(renderer);
 }

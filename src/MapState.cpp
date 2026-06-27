@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "utils.h"
 
+#include <iostream>
 #include <sstream>
 
 MapState::MapState(StateManager* stateManager) : stateManager(stateManager)
@@ -34,6 +35,7 @@ MapState::~MapState()
 bool MapState::initialize()
 {
     font = loadFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 16);
+    std::cerr << "Load file /usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf \n"; // INFO
     map = MapLoader::load();
     // Init Player
     _playerSprite = Sprite::load("assets/player.png");
@@ -54,6 +56,11 @@ bool MapState::initialize()
 
 void MapState::update(const float& deltaTime)
 {
+    if (!map || !player) {
+        std::cerr << __func__ << ": Access to the null pointer is not possible\n";
+        return;
+    }
+
     SDL_Event event = stateManager->getEvent();
     // movement player
     if (event.type == SDL_KEYUP && event.key.repeat == 0) {
@@ -118,6 +125,11 @@ void MapState::update(const float& deltaTime)
 
 void MapState::render(SDL_Renderer* renderer)
 {
+    if (!map || !player) {
+        std::cerr << __func__ << ": Access to the null pointer is not possible\n";
+        return;
+    }
+
     map->render(renderer);
     player->render(renderer);
     _displayCollisionBox(renderer, player);
@@ -134,6 +146,7 @@ void MapState::render(SDL_Renderer* renderer)
 void MapState::_displayCollisionBox(SDL_Renderer* renderer, GameObject* object)
 {
     if (!object) {
+        std::cerr << ": There is no object to render \n";
         return;
     }
 
@@ -143,6 +156,11 @@ void MapState::_displayCollisionBox(SDL_Renderer* renderer, GameObject* object)
 
 void MapState::_displayDebugInfo(SDL_Renderer* renderer)
 {
+    if (!player) {
+        std::cerr << __func__ << ": Access to the null pointer is not possible\n";
+        return;
+    }
+
     std::stringstream ss_player_position;
     ss_player_position<< "Player x" << player->getPosition().x << ":y" << player->getPosition().y;
     drawText(renderer, ss_player_position.str(), font, {0, 0, 0, 255}, 5, Game::WINDOW_HEIGHT - 15);

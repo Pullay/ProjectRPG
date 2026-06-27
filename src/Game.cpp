@@ -22,6 +22,7 @@ Game::~Game()
 
 void Game::run()
 {
+    // Do not execute the code if state is not set.
     if (!stateManager->getState()) {
         return;
     }
@@ -49,27 +50,22 @@ void Game::run()
 bool Game::initialize()
 {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-        std::cerr << SDL_GetError() <<"\n";
+        std::cerr << __func__ << ": SDL_Init failed to initialize. Detals: " << SDL_GetError() <<"\n";
         return false;
     }
 
     if (!IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG)) {
-        std::cerr << IMG_GetError << "\n";
+        std::cerr << __func__ << ": IMG_Init failed to initialize. Detals: " << IMG_GetError << "\n";
         return false;
     }
 
     if (TTF_Init() == -1) {
-        std::cerr << TTF_GetError << "\n";
+        std::cerr << __func__ << ": TTF_Init failed to initialize. Detals: " << TTF_GetError << "\n";
         return false;
     }
 
     window = SDL_CreateWindow("ProjectRPG", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
-    if (!renderer) {
-        std::cout << SDL_GetError() << "\n";
-        return false;
-    }
 
     running = true;
     lastFrameTime = SDL_GetTicks();
@@ -88,10 +84,6 @@ void Game::processInput()
 
 void Game::render()
 {
-    if (!stateManager->getState()) {
-        return;
-    }
-
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     stateManager->render(renderer);

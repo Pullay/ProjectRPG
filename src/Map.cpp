@@ -40,6 +40,7 @@ void Map::update(const float& deltaTime)
 
 void Map::render(SDL_Renderer *renderer)
 {
+    // Do not execute the code if the map is empty.
     if (layers.empty()) {
         return;
     }
