@@ -8,8 +8,8 @@ class GameObject
     public:
         ~GameObject() {};
         SDL_Rect getCollider();
-        bool checkCollision(SDL_Rect a, SDL_Rect b);
-        bool checkCollision(GameObject* object);
+        bool isTouching(SDL_Rect otherCollider);
+        bool isTouching(GameObject* otherObject);
         virtual void update(const float& deltaTime) = 0;
         virtual void render(SDL_Renderer *renderer) = 0;
 

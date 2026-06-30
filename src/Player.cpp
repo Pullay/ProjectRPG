@@ -45,6 +45,26 @@ void Player::move(MoveDirection direction)
     }
 }
 
+void Player::moveBackward()
+{
+    switch (state) {
+        case Player::State::WALK_UP:
+            velocity.y += 1;
+            break;
+        case Player::State::WALK_DOWN:
+            velocity.y -= 1;;
+            break;
+        case Player::State::WALK_LEFT:
+            velocity.x += 1;
+            break;
+        case Player::State::WALK_RIGHT:
+            velocity.x -= 1;
+            break;
+        default:
+            break;
+    }
+}
+
 void Player::setPosition(int nx, int ny)
 {
     position = {nx, ny};

@@ -27,6 +27,7 @@ class Player : public GameObject
         std::string getName() const;
         void addClip(State state, SDL_Rect rect);
         void move(MoveDirection direction);
+        void moveBackward();
         void stop();
         void setPosition(int nx, int ny);
         SDL_Point getPosition() const;

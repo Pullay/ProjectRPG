@@ -61,6 +61,8 @@ void MapState::update(const float& deltaTime)
         return;
     }
 
+    map->update(deltaTime);
+
     SDL_Event event = stateManager->getEvent();
     // movement player
     if (event.type == SDL_KEYUP && event.key.repeat == 0) {
@@ -82,45 +84,23 @@ void MapState::update(const float& deltaTime)
 
     player->update(deltaTime);
 
+    if (player->getPosition().x < 0
+     || player->getPosition().x >= (map->getWidth() * map->getTileSize()) - 32
+     || player->getPosition().y < 0
+     || player->getPosition().y >= (map->getHidth() * map->getTileSize()) -32
+    ) {
+        player->moveBackward();
+    }
+
     // update enemies
     for (auto enemy : enemies) {
         // check collsion
-        if (player->checkCollision(enemy)) {
-             switch (player->getState()) {
-                case Player::WALK_UP:
-                    player->move(Player::MoveDirection::DOWN);
-                    break;
-                case Player::WALK_DOWN:
-                    player->move(Player::MoveDirection::UP);
-                    break;
-                case Player::WALK_LEFT:
-                    player->move(Player::MoveDirection::RIGHT);
-                    break;
-                case Player::WALK_RIGHT:
-                    player->move(Player::MoveDirection::LEFT);
-                    break;
-                default:
-                    break;
-            }
+        if (player->isTouching(enemy)) {
+            player->moveBackward();
         }
 
         enemy->update(deltaTime);
     }
-
-    if (player->getPosition().x < 0) {
-        player->move(Player::MoveDirection::RIGHT);
-    }
-    if (player->getPosition().x >= (map->getWidth() * map->getTileSize()) - 32) {
-        player->move(Player::MoveDirection::LEFT);
-    }
-    if (player->getPosition().y < 0) {
-        player->move(Player::MoveDirection::DOWN);
-    }
-    if (player->getPosition().y >= (map->getHidth() * map->getTileSize()) -32) {
-       player->move(Player::MoveDirection::UP);
-    }
-
-    map->update(deltaTime);
 }
 
 void MapState::render(SDL_Renderer* renderer)
@@ -131,8 +111,8 @@ void MapState::render(SDL_Renderer* renderer)
     }
 
     map->render(renderer);
+     _displayCollisionBox(renderer, player);
     player->render(renderer);
-    _displayCollisionBox(renderer, player);
 
     for (auto enemy : enemies) {
         drawText(renderer, enemy->getName(), font, {0, 0, 0, 255}, enemy->getPosition().x, enemy->getPosition().y - 14);
