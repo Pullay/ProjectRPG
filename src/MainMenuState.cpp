@@ -16,6 +16,7 @@ MainMenuState::~MainMenuState()
     background = nullptr;
     delete button;
     button = nullptr;
+    // BUG: An error occurs when closing the window.
     if (font != nullptr) {
         TTF_CloseFont(font);
         font = nullptr;
@@ -24,10 +25,10 @@ MainMenuState::~MainMenuState()
 
 bool MainMenuState::initialize()
 {
-    font = loadFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 24);
     background = Image::load("assets/gui/main_menu.png");
+    font = loadFont("/usr/share/fonts/truetype/dejavu/DejaVuMathTeXGyre.ttf", 24);
     button = new Button(Game::WINDOW_WIDTH / 2, Game::WINDOW_HEIGHT / 2, 84, 42);
-    button->addText("Start", font, {0, 255, 0, 255}, 10, 10);
+    button->addText("Start", font, {0, 0, 0, 255});
     return true;
 }
 
@@ -35,17 +36,21 @@ void MainMenuState::update(const float& deltaTime)
 {
     if (!button) {
         std::cerr << __func__ << ": Access to the null pointer is not possible \n";
+        return;
     }
 
+    button->setState(Button::State::IDLE);
     SDL_Event e = stateManager->getEvent();
     if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP) {
         int mx, my;
         SDL_GetMouseState(&mx, &my);
 
         if (button->isFocus(mx, my)) {
-           SDL_MouseButtonEvent mouse_button_event = stateManager->getEvent().button;
-           if (mouse_button_event.button == SDL_BUTTON_LEFT)
-              stateManager->changeState(new MapState(stateManager));
+            button->setState(Button::State::HOVER);
+            if (e.button.button == SDL_BUTTON_LEFT) {
+                button->setState(Button::State::ACTIVE);
+                stateManager->changeState(new MapState(stateManager));
+            }
         }
     }
 }
