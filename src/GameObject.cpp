@@ -1,5 +1,10 @@
 #include "GameObject.h"
 
+SDL_Point GameObject::getPosition() const
+{
+    return position;
+}
+
 SDL_Rect GameObject::getCollider()
 {
     return collider;
@@ -50,4 +55,18 @@ bool GameObject::isTouching(GameObject* otherObject)
     }
 
     return isTouching(otherObject->getCollider());
+}
+
+// PROTECTED
+void GameObject::setPosition(SDL_Point _position)
+{
+    position = _position;
+    // update collider
+    collider.x = position.x;
+    collider.y = position.y;
+}
+
+void GameObject::setCollider(SDL_Rect _collider)
+{
+    collider = _collider;
 }

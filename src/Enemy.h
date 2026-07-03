@@ -4,23 +4,18 @@
 #include "GameObject.h"
 #include "Sprite.h"
 
-#include <SDL_rect.h>
-
 #include <string>
 
 class Enemy : public GameObject
 {
     public:
-        Enemy(std::string name, Sprite* sprite);
+        Enemy(std::string name, SDL_Point position, Sprite* sprite);
         std::string getName() const;
-        void setPosition(int nx, int ny);
-        SDL_Point getPosition() const;
         void update(const float& deltaTime) override;
         void render(SDL_Renderer *renderer) override;
 
     private:
         std::string name;
         Sprite* sprite;
-        SDL_Point position;
 };
 #endif

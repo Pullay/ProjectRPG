@@ -4,6 +4,17 @@
 
 #include <iostream>
 
+struct Font
+{
+    TTF_Font* font;
+};
+
+struct Text
+{
+    SDL_Point position;
+    Font font;
+};
+
 inline SDL_Texture* loadTexture(SDL_Renderer* renderer, std::string path)
 {
     SDL_Texture* texture = nullptr;

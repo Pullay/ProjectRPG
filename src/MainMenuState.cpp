@@ -3,8 +3,6 @@
 #include "MapState.h"
 #include "utils.h"
 
-#include <SDL_ttf.h>
-
 MainMenuState::MainMenuState(StateManager* stateManager) : stateManager(stateManager)
 {
    initialize();

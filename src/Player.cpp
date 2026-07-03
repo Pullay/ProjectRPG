@@ -1,13 +1,13 @@
 #include "Player.h"
 
-Player::Player(const std::string name, Sprite* sprite)
+Player::Player(const std::string name, SDL_Point position, Sprite* sprite)
   : name(name)
   , sprite(sprite)
-  , position({0, 0})
   , velocity({0, 0})
   , state(State::IDLE)
 {
-    this->collider = {position.x, position.y, 24, 32};
+    this->setCollider({0, 0, 24, 32});
+    this->setPosition(position);
 }
 
 Player::~Player()
@@ -65,18 +65,6 @@ void Player::moveBackward()
     }
 }
 
-void Player::setPosition(int nx, int ny)
-{
-    position = {nx, ny};
-    this->collider.x = nx;
-    this->collider.y = ny;
-}
-
-SDL_Point Player::getPosition() const
-{
-    return position;
-}
-
 Player::State Player::getState() const
 {
     return state;
@@ -88,13 +76,14 @@ void Player::update(const float& deltaTime)
         return;
     }
 
-    position.x += velocity.x;
+    int x = 0, y = 0;
+    x = this->getPosition().x;
+    x += velocity.x;
     velocity.x = 0;
-    position.y += velocity.y;
+    y = this->getPosition().y;
+    y += velocity.y;
     velocity.y = 0;
-    // update collider
-    this->collider.x = position.x;
-    this->collider.y = position.y;
+    this->setPosition({x, y});
 }
 
 void Player::stop()
@@ -104,5 +93,5 @@ void Player::stop()
 
 void Player::render(SDL_Renderer *renderer)
 {
-    sprite->draw(renderer, position);
+    sprite->draw(renderer, this->getPosition());
 }

@@ -22,15 +22,13 @@ class Player : public GameObject
             IDLE = 0, WALK_UP, WALK_LEFT, WALK_DOWN,WALK_RIGHT, ATTACK, DEATH
         };
 
-        Player(const std::string name, Sprite* sprite);
+        Player(const std::string name, SDL_Point position, Sprite* sprite);
         ~Player();
         std::string getName() const;
         void addClip(State state, SDL_Rect rect);
         void move(MoveDirection direction);
         void moveBackward();
         void stop();
-        void setPosition(int nx, int ny);
-        SDL_Point getPosition() const;
         Player::State getState() const;
         void update(const float& deltaTime) override;
         void render(SDL_Renderer *renderer) override;
@@ -39,7 +37,6 @@ class Player : public GameObject
         Sprite* sprite;
         std::map<Player::State, SDL_Rect> clips;
         const std::string name;
-        SDL_Point position;
         SDL_Point velocity;
         Player::State state;
 };

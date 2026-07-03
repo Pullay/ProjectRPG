@@ -40,16 +40,14 @@ bool MapState::initialize()
     // Init Player
     _playerSprite = Sprite::load("assets/player.png");
     _playerSprite->setClip({24, 32, 24, 32}); // default clip
-    player = new Player("Me", _playerSprite);
+    player = new Player("Me", {Game::WINDOW_WIDTH / 2, Game::WINDOW_HEIGHT / 2}, _playerSprite);
     player->addClip(Player::WALK_UP, {24, 0, 24, 32});
     player->addClip(Player::WALK_LEFT, {24, 32, 24, 32});
     player->addClip(Player::WALK_DOWN, {24, 64, 24, 32});
     player->addClip(Player::WALK_RIGHT, {24, 96, 24, 32});
-    player->setPosition(Game::WINDOW_WIDTH / 2, Game::WINDOW_HEIGHT / 2);
     // Init Enemies
     // TODO: temp sprite
-    auto enemy = new Enemy("test", _playerSprite);
-    enemy->setPosition(player->getPosition().x + 50, player->getPosition().y + 50);
+    auto enemy = new Enemy("test", {player->getPosition().x + 50, player->getPosition().y + 50}, _playerSprite);
     enemies.push_back(enemy);
     return true;
 };
