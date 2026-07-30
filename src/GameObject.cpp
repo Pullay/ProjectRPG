@@ -1,34 +1,88 @@
 #include "GameObject.h"
 
-SDL_Point GameObject::getPosition() const
+void GameObject::setPosition(SDL_FPoint position)
+{
+    this->position = position;
+    bounds.x = position.x;
+    bounds.y = position.y;
+}
+
+SDL_FPoint GameObject::getPosition() const
 {
     return position;
 }
 
-SDL_Rect GameObject::getCollider()
+SDL_FRect GameObject::getBounds() const
 {
-    return collider;
+    return bounds;
+}
+bool GameObject::isColliding(GameObject* other)
+{
+    if (!collisionActive) {
+        return false;
+    }
+
+    SDL_FRect this_bounds = this->getBounds();
+    SDL_FRect other_bounds = other->getBounds();
+    return this->checkCollision(this_bounds, other_bounds);
 }
 
-// AABB Collision Detection
-// @source https://lazyfoo.net/tutorials/SDL/27_collision_detection/index.php
-bool GameObject::isTouching(SDL_Rect otherCollider)
+void GameObject::resolveCollision(GameObject* other)
 {
-    int leftA, leftB;
-    int rightA, rightB;
-    int topA, topB;
-    int bottomA, bottomB;
+    if (!collisionActive) {
+        return;
+    }
 
-    leftA = collider.x;
-    rightA = collider.x + collider.w;
-    topA = collider.y;
-    bottomA = collider.y + collider.h;
+    SDL_FRect this_bounds = this->getBounds();
+    SDL_FRect other_bounds = other->getBounds();
+    if (this->checkCollision(this_bounds, other_bounds)) {
+        float dx = (this_bounds.x + this_bounds.w / 2) - (other_bounds.x + other_bounds.w / 2);
+        float dy = (this_bounds.y + this_bounds.h / 2) - (other_bounds.y + other_bounds.h / 2);
 
-    leftB = otherCollider.x;
-    rightB = otherCollider.x + otherCollider.w;
-    topB = otherCollider.y;
-    bottomB = otherCollider.y + otherCollider.h;
+        float overlap_x = (this_bounds.w / 2 + other_bounds.w / 2) - std::abs(dx);
+        float overlap_y = (this_bounds.h / 2 + other_bounds.h / 2) - std::abs(dy);
 
+        if (overlap_x < overlap_y) {
+            if (dx > 0) {
+                position.x += overlap_x;
+            } else {
+                position.x -= overlap_x;
+                velocity.x = 0;
+            }
+        } else {
+            if (dy > 0) {
+                position.y += overlap_y;
+            } else {
+                position.y -= overlap_y;
+                velocity.y = 0;
+            }
+        }
+        setPosition(position);
+    }
+}
+
+// PRIVATE
+bool GameObject::checkCollision(SDL_FRect a, SDL_FRect b)
+{
+    //The sides of the rectangles
+    float leftA, leftB;
+    float rightA, rightB;
+    float topA, topB;
+    float bottomA, bottomB;
+
+    //Calculate the sides of rect A
+    leftA = a.x;
+    rightA = a.x + a.w;
+    topA = a.y;
+    bottomA = a.y + a.h;
+
+    //Calculate the sides of rect B
+    leftB = b.x;
+    rightB = b.x + b.w;
+    topB = b.y;
+    bottomB = b.y + b.h;
+
+    //If any of the sides from A are outside of B
     if(bottomA <= topB) {
         return false;
     }
@@ -45,28 +99,6 @@ bool GameObject::isTouching(SDL_Rect otherCollider)
         return false;
     }
 
+    //If none of the sides from A are outside B
     return true;
-}
-
-bool GameObject::isTouching(GameObject* otherObject)
-{
-    if (!otherObject) {
-        return true;
-    }
-
-    return isTouching(otherObject->getCollider());
-}
-
-// PROTECTED
-void GameObject::setPosition(SDL_Point _position)
-{
-    position = _position;
-    // update collider
-    collider.x = position.x;
-    collider.y = position.y;
-}
-
-void GameObject::setCollider(SDL_Rect _collider)
-{
-    collider = _collider;
 }

@@ -1,51 +1,57 @@
 #include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_ttf.h>
 
-#include <iostream>
+#include <cmath>
 
-struct Font
+inline void blit(SDL_Renderer* renderer, SDL_Texture* texture, SDL_Rect src, SDL_FPoint position)
 {
-    TTF_Font* font;
-};
-
-struct Text
-{
-    SDL_Point position;
-    Font font;
-};
-
-inline SDL_Texture* loadTexture(SDL_Renderer* renderer, std::string path)
-{
-    SDL_Texture* texture = nullptr;
-    texture = IMG_LoadTexture(renderer, path.c_str());
-    if (!texture) {
-        std::cerr << "Cannot load texture from file " << path << "\n";
+    SDL_FRect dst{position.x, position.y};
+    if (src.w && src.h) {
+        dst.w = static_cast<float>(src.w);
+        dst.h = static_cast<float>(src.h);
     }
-
-    return texture;
+    SDL_RenderCopyF(renderer, texture, &src, &dst);
 }
 
-inline TTF_Font* loadFont(std::string path, uint8_t fontSize)
+// Adding two vectors
+inline SDL_Point vadd(SDL_Point a, SDL_Point b)
 {
-    TTF_Font* font = nullptr;
-    font = TTF_OpenFont(path.c_str(), fontSize);
-    if (!font) {
-        std::cerr << "Cannot load font from file " << path << "\n";
-    }
-    return font;
+    return {a.x + b.x, a.y + b.y};
 }
 
-inline void drawText(SDL_Renderer* renderer, std::string text, TTF_Font* font, SDL_Color textcolor, int x, int y)
+// Subtraction of two vectors
+inline SDL_Point vsub(SDL_Point a, SDL_Point b)
 {
-    SDL_Surface* text_surface = TTF_RenderText_Solid(font, text.c_str(), textcolor);
-    SDL_Texture* text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-    SDL_Rect text_bounds{x, y};
-    text_bounds.w = text_surface->w;
-    text_bounds.h = text_surface->h;
-    SDL_RenderCopy(renderer, text_texture,NULL, &text_bounds);
-    SDL_DestroyTexture(text_texture);
-    text_texture = nullptr;
-    SDL_FreeSurface(text_surface);
-    text_surface = nullptr;
+    return {a.x - b.x, a.y - b.y};
+}
+
+// Multiplication of two vectors
+inline SDL_Point vmul(SDL_Point a, SDL_Point b)
+{
+    return {a.x * b.x, a.y * b.y};
+}
+
+// Scalar multiplication
+inline SDL_Point vsmul(SDL_Point v, int scalar)
+{
+    return {v.x * scalar, v.y * scalar};
+}
+
+// Dividing two vectors
+inline SDL_Point vdiv(SDL_Point a, SDL_Point b)
+{
+    if (b.x == 0 || b.y == 0) {
+        return {0, 0};
+    }
+
+    return {a.x / b.x, a.y / b.y};
+}
+
+// Vector length 
+inline float vlen(SDL_Point v)
+{
+    if (v.x <= 0 || v.y <= 0) {
+        return 0;
+    }
+
+    return std::sqrt(pow(v.x, 2) + pow(v.y, 2));
 }

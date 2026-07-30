@@ -1,22 +1,17 @@
 #include "Enemy.h"
 
-Enemy::Enemy(const std::string name, SDL_Point position, Sprite* sprite)
-  : name(name)
-  , sprite(sprite)
+Enemy::Enemy(Sprite* sprite) : sprite(sprite)
 {
-    this->setCollider({0, 0, 24, 32});
-    this->setPosition(position);
+    this->bounds = {0, 0, 24, 32};
 }
 
-std::string Enemy::getName() const
+Enemy::~Enemy()
 {
-    return name;
+    delete sprite;
+    sprite = nullptr;
 }
 
-void Enemy::update(const float& deltaTime)
-{}
-
-void Enemy::render(SDL_Renderer *renderer)
+Sprite* Enemy::getSprite()
 {
-    sprite->draw(renderer, this->getPosition());
+    return sprite;
 }

@@ -9,13 +9,11 @@
 class Enemy : public GameObject
 {
     public:
-        Enemy(std::string name, SDL_Point position, Sprite* sprite);
-        std::string getName() const;
-        void update(const float& deltaTime) override;
-        void render(SDL_Renderer *renderer) override;
+        Enemy(Sprite* sprite);
+        ~Enemy() override;
+        Sprite* getSprite();
 
     private:
-        std::string name;
         Sprite* sprite;
 };
 #endif

@@ -1,31 +1,35 @@
 #ifndef GAME_H_
 #define GAME_H_
 
-#include "StateManager.h"
+#include "Input.h"
 
 #include <SDL.h>
 
+#include <cstdint>
+#include <string>
+
+class BaseScene;
+
+// Linked List Class​​ @source https://www.compilenrun.com/docs/language/cpp/cpp-advanced-data-structures/cpp-linked-lists/
 class Game final
 {
     public:
-        static const int WINDOW_WIDTH = 640;
-        static const int WINDOW_HEIGHT = 480;
-
-        Game();
+        Game(std::string title, uint16_t width, uint16_t height);
         ~Game();
+        bool initialize();
+        SDL_Window* getWindow();
+        Input* getInput() const;
+        void pushScene(BaseScene* scene);
+        bool popScene();
         void run();
+        void quit();
 
     private:
         SDL_Window* window;
-        SDL_Renderer* renderer;
-        SDL_Event event;
-        StateManager* stateManager;
+        Input* input;
         bool running = false;
-        int lastFrameTime; 
-
-        bool initialize();
-        void processInput();
-        void render();
-        void shutdown();
+        BaseScene* head;
+  
+        SDL_Window* createWindow(std::string title, uint16_t width, uint16_t height);
 };
 #endif
