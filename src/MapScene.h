@@ -4,17 +4,18 @@
 #include "BaseScene.h"
 #include "Enemy.h"
 #include "Game.h"
+#include "MovementSystem.h"
 #include "Player.h"
+#include "SpriteView.h"
 #include "TileMap.h"
+#include "TileMapView.h"
 
 #include <cstdint>
 #include <string>
-#include <vector>
 
 class MapScene final : public BaseScene
 {
     public:
-        const std::string MAP_TILESHEET_FILE = "assets/map_tiles.png";
         const std::string PLAYER_SPRITESHEET_FILE = "assets/player.png";
         const std::string ENEMIES_SPRITESHEET_FILE = "assets/player.png";
 
@@ -25,29 +26,10 @@ class MapScene final : public BaseScene
         void render(SDL_Renderer* renderer) override;
 
     private:
-        const uint16_t maxEnemies = 5;
         TileMap* map;
         Player* player;
-        //TODO: Temp
-        std::vector<int> mapData = {
-            1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-            1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-            1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-            1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-            1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-            1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-            1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-            1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-            1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-            1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-            1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-            1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-            1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-            1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-            1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-        };
-        std::vector<Enemy*> enemies;
-
-        void spawnEnemies();
+        MovementSystem* movementSystem;
+        TileMapView* mapView;
+        SpriteView* spriteView;
 };
 #endif
