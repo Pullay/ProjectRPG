@@ -1,7 +1,6 @@
 #include "Player.h"
 
-Player::Player(const std::string name, Sprite* sprite)
-  : name(name)
+Player::Player(const std::string name, Sprite* sprite) : name(name)
 {
     this->sprite = sprite;
     bounds = {0, 0, 24, 32};
@@ -15,7 +14,7 @@ std::string Player::getName() const
     return name;
 }
 
-void Player::move(SDL_FPoint velocity, const float& deltaTime)
+void Player::move(Vector2 velocity, const float& deltaTime)
 {
     this->position.x += velocity.x * (deltaTime / 1000);
     this->position.y += velocity.y * (deltaTime / 1000);

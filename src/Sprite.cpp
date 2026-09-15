@@ -1,4 +1,5 @@
 #include "Sprite.h"
+#include "Vector2.h"
 #include "utils.h"
 
 #include <SDL_image.h>
@@ -26,7 +27,7 @@ Sprite::~Sprite()
     surface = nullptr;
 }
 
-void Sprite::setPosition(SDL_FPoint position)
+void Sprite::setPosition(Vector2 position)
 {
     this->position = position;
 }
@@ -39,8 +40,9 @@ SDL_Surface* Sprite::getSurface()
 void Sprite::render(SDL_Renderer* renderer)
 {
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-    const SDL_Rect src{24, 32, 24, 32};
-    blit(renderer, texture, src, position);
+    // TODO: Temp
+    Rect rect{24.f, 32.f, 24.f, 32.f};
+    blit(renderer, texture, rect, position);
     SDL_DestroyTexture(texture);
     texture = nullptr;
 }

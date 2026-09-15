@@ -3,8 +3,7 @@
 
 #include "Player.h"
 #include "TileMap.h"
-
-#include <SDL_rect.h>
+#include "Vector2.h"
 
 class MovementSystem
 {
@@ -16,6 +15,6 @@ class MovementSystem
     private:
         TileMap& map;
         Player& player;
-        SDL_FPoint velocity;
+        Vector2 velocity;
 };
 #endif

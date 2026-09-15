@@ -1,18 +1,18 @@
 #include "GameObject.h"
 
-void GameObject::setPosition(SDL_FPoint position)
+void GameObject::setPosition(Vector2 position)
 {
     this->position = position;
     bounds.x = position.x;
     bounds.y = position.y;
 }
 
-SDL_FPoint GameObject::getPosition() const
+Vector2 GameObject::getPosition() const
 {
     return position;
 }
 
-SDL_FRect GameObject::getBounds() const
+Rect GameObject::getBounds() const
 {
     return bounds;
 }
@@ -22,8 +22,8 @@ bool GameObject::isColliding(GameObject* other)
         return false;
     }
 
-    SDL_FRect this_bounds = this->getBounds();
-    SDL_FRect other_bounds = other->getBounds();
+    Rect this_bounds = this->getBounds();
+    Rect other_bounds = other->getBounds();
     return this->checkCollision(this_bounds, other_bounds);
 }
 
@@ -33,14 +33,14 @@ void GameObject::resolveCollision(GameObject* other)
         return;
     }
 
-    SDL_FRect this_bounds = this->getBounds();
-    SDL_FRect other_bounds = other->getBounds();
+    Rect this_bounds = this->getBounds();
+    Rect other_bounds = other->getBounds();
     if (this->checkCollision(this_bounds, other_bounds)) {
-        float dx = (this_bounds.x + this_bounds.w / 2) - (other_bounds.x + other_bounds.w / 2);
-        float dy = (this_bounds.y + this_bounds.h / 2) - (other_bounds.y + other_bounds.h / 2);
+        float dx = (this_bounds.x + this_bounds.width / 2) - (other_bounds.x + other_bounds.width / 2);
+        float dy = (this_bounds.y + this_bounds.height / 2) - (other_bounds.y + other_bounds.height / 2);
 
-        float overlap_x = (this_bounds.w / 2 + other_bounds.w / 2) - std::abs(dx);
-        float overlap_y = (this_bounds.h / 2 + other_bounds.h / 2) - std::abs(dy);
+        float overlap_x = (this_bounds.width / 2 + other_bounds.width / 2) - std::abs(dx);
+        float overlap_y = (this_bounds.height / 2 + other_bounds.height / 2) - std::abs(dy);
 
         if (overlap_x < overlap_y) {
             if (dx > 0) {
@@ -62,7 +62,7 @@ void GameObject::resolveCollision(GameObject* other)
 }
 
 // PRIVATE
-bool GameObject::checkCollision(SDL_FRect a, SDL_FRect b)
+bool GameObject::checkCollision(Rect a, Rect b)
 {
     //The sides of the rectangles
     float leftA, leftB;
@@ -72,15 +72,15 @@ bool GameObject::checkCollision(SDL_FRect a, SDL_FRect b)
 
     //Calculate the sides of rect A
     leftA = a.x;
-    rightA = a.x + a.w;
+    rightA = a.x + a.width;
     topA = a.y;
-    bottomA = a.y + a.h;
+    bottomA = a.y + a.height;
 
     //Calculate the sides of rect B
     leftB = b.x;
-    rightB = b.x + b.w;
+    rightB = b.x + b.width;
     topB = b.y;
-    bottomB = b.y + b.h;
+    bottomB = b.y + b.height;
 
     //If any of the sides from A are outside of B
     if(bottomA <= topB) {

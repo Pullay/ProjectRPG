@@ -2,8 +2,7 @@
 #define PLAYER_H_
 
 #include "RenderObject.h"
-
-#include <SDL_rect.h>
+#include "Vector2.h"
 
 #include <string>
 
@@ -17,7 +16,7 @@ class Player : public RenderObject
         Player(const std::string name, Sprite* sprite);
         ~Player() override;
         std::string getName() const;
-        void move(SDL_FPoint velocity, const float& deltaTime);
+        void move(Vector2 velocity, const float& deltaTime);
 
     private:
         const std::string name;

@@ -1,5 +1,5 @@
 #include "MovementSystem.h"
-#include <SDL_rect.h>
+#include "Vector2.h"
 
 MovementSystem::MovementSystem(TileMap& map, Player& player) : map(map), player(player), velocity({0, 0})
 {}
@@ -14,7 +14,7 @@ void MovementSystem::move(float vx, float vy)
 void MovementSystem::update(const float& deltaTime)
 {
     player.move(velocity, deltaTime);
-    SDL_FPoint pos;
+    Vector2 pos;
     pos.x = std::min(std::max(player.getPosition().x, 0.f), static_cast<float>(map.getWidth() * map.getTileSize()) - 32);
     pos.y = std::min(std::max(player.getPosition().y, 0.f), static_cast<float>(map.getHeidth() * map.getTileSize()) - 32);
     player.setPosition(pos);
